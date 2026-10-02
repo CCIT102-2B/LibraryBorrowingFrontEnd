@@ -1,0 +1,413 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f0f4f8;
+  color: #1a202c;
+  min-height: 100vh;
+}
+
+/* ===== Header / Nav ===== */
+header {
+  background: #2b6cb0;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+header h1 { font-size: 1.4rem; font-weight: 700; }
+
+nav { display: flex; gap: 0.5rem; }
+
+.tab-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: white;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.tab-btn:hover  { background: rgba(255,255,255,0.28); }
+.tab-btn.active { background: white; color: #2b6cb0; font-weight: 600; }
+
+/* ===== Main Layout ===== */
+main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+
+.tab-panel        { display: none; }
+.tab-panel.active { display: block; }
+
+h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #2d3748; }
+h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; color: #4a5568; }
+
+/* ===== Cards ===== */
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ===== Forms ===== */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #718096;
+  gap: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"] {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  width: 180px;
+  transition: border-color 0.15s;
+}
+input:focus { outline: none; border-color: #2b6cb0; }
+
+.select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.select-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+select {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 280px;
+  background: white;
+  color: #2d3748;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+select:focus { border-color: #2b6cb0; box-shadow: 0 0 0 3px rgba(43,108,176,0.12); }
+
+button[type="submit"] {
+  background: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  align-self: flex-end;
+  transition: background 0.2s;
+}
+button[type="submit"]:hover { background: #2c5282; }
+
+button.small {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: #edf2f7;
+  color: #4a5568;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+button.small:hover { background: #e2e8f0; }
+
+/* ===== Tables ===== */
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+
+th {
+  background: #edf2f7;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 2px solid #cbd5e0;
+}
+
+td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #2d3748;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f7fafc; }
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge-green { background: #c6f6d5; color: #276749; }
+.badge-red   { background: #fed7d7; color: #9b2c2c; }
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  cursor: pointer;
+  font-size: 0.82rem;
+  text-decoration: underline;
+}
+.btn-delete:hover { color: #9b2c2c; }
+
+/* ===== Inline RFID editor (Members table) ===== */
+.rfid-value-cell { white-space: nowrap; }
+
+.rfid-tag {
+  display: inline-block;
+  background: #ebf4ff;
+  color: #2b6cb0;
+  border: 1px solid #bee3f8;
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.78rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  margin-right: 0.3rem;
+}
+
+.btn-set-rfid {
+  background: none;
+  border: 1px solid #bee3f8;
+  color: #2b6cb0;
+  cursor: pointer;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+.btn-set-rfid:hover { background: #ebf4ff; }
+
+.inline-rfid-editor {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.inline-rfid-input {
+  width: 150px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #2b6cb0;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  outline: none;
+  font-family: 'Courier New', monospace;
+}
+
+.btn-rfid-save {
+  background: #276749;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.btn-rfid-save:hover { background: #22543d; }
+
+.btn-rfid-cancel {
+  background: #edf2f7;
+  color: #4a5568;
+  border: 1px solid #cbd5e0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+.btn-rfid-cancel:hover { background: #e2e8f0; }
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #2d3748;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+.toast.hidden  { opacity: 0; pointer-events: none; }
+.toast.success { background: #276749; }
+.toast.error   { background: #9b2c2c; }
+
+/* ===== RFID Widget ===== */
+.rfid-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 220px;
+}
+
+.rfid-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rfid-label-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rfid-clear-btn {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  background: #fed7d7;
+  color: #9b2c2c;
+  border: 1px solid #feb2b2;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.rfid-clear-btn:hover  { background: #feb2b2; }
+.rfid-clear-btn.hidden { display: none; }
+
+/* Tap zone — the visual card area */
+.rfid-tap-zone {
+  position: relative;
+  width: 220px;
+  height: 90px;
+  border: 2px dashed #bee3f8;
+  border-radius: 10px;
+  background: #ebf4ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+}
+.rfid-tap-zone:hover            { border-color: #2b6cb0; background: #dbeafe; }
+.rfid-tap-zone.rfid-focused     { border-style: solid; border-color: #2b6cb0; background: #dbeafe; }
+.rfid-tap-zone.rfid-scanning    { border-color: #d69e2e; background: #fefcbf; animation: rfid-pulse 0.6s infinite alternate; }
+.rfid-tap-zone.rfid-scan-ok     { border-style: solid; border-color: #276749; background: #c6f6d5; }
+.rfid-tap-zone.rfid-scan-err    { border-style: solid; border-color: #9b2c2c; background: #fed7d7; }
+
+@keyframes rfid-pulse {
+  from { box-shadow: 0 0 0 0 rgba(43,108,176,0.3); }
+  to   { box-shadow: 0 0 0 8px rgba(43,108,176,0); }
+}
+
+/* Ripple wave behind icon */
+.rfid-wave {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(43,108,176,0.08);
+  animation: rfid-wave-expand 1.8s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes rfid-wave-expand {
+  0%   { transform: scale(0.5); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.rfid-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.rfid-tap-text {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2b6cb0;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.rfid-tap-zone.rfid-scanning  .rfid-tap-text { color: #744210; }
+.rfid-tap-zone.rfid-scan-ok   .rfid-tap-text { color: #276749; }
+.rfid-tap-zone.rfid-scan-err  .rfid-tap-text { color: #9b2c2c; }
+
+/* The actual input — visible but compact, sits under the zone */
+.rfid-scan-input {
+  width: 220px;
+  padding: 0.38rem 0.65rem;
+  border: 1px solid #bee3f8;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  background: #f7fafc;
+  color: #4a5568;
+  caret-color: #2b6cb0;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.rfid-scan-input:focus { border-color: #2b6cb0; background: white; }
+
+/* Visible Student ID field — auto-filled by RFID or typed manually */
+.rfid-value-input {
+  width: 220px;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  background: white;
+  color: #2d3748;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.rfid-value-input:focus        { border-color: #2b6cb0; box-shadow: 0 0 0 3px rgba(43,108,176,0.12); }
+.rfid-value-input.rfid-filled  { border-color: #276749; background: #f0fff4; color: #276749; }
+.rfid-value-input.rfid-dup-warn{ border-color: #d69e2e; background: #fffff0; }
+
+/* Member info result card */
+.rfid-result {
+  width: 220px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+.rfid-result.hidden  { display: none; }
+.rfid-result.ok      { background: #c6f6d5; border: 1px solid #9ae6b4; color: #22543d; }
+.rfid-result.err     { background: #fed7d7; border: 1px solid #feb2b2; color: #742a2a; }
+
+.rfid-member-name    { font-weight: 700; font-size: 0.85rem; }
+.rfid-member-detail  { font-size: 0.75rem; opacity: 0.85; margin-top: 0.1rem; }
+
+/* Disable Borrow button until RFID confirmed */
+#btn-borrow:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

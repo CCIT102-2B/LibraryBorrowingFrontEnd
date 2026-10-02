@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Library Borrowing System</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="books">Books</button>
+      <button class="tab-btn"        data-tab="members">Members</button>
+      <button class="tab-btn"        data-tab="borrowing">Borrowing</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- BOOKS TAB -->
+    <section id="tab-books" class="tab-panel active">
+      <h2>Books</h2>
+
+      <div class="card">
+        <h3>Add New Book</h3>
+        <form id="form-add-book">
+          <label>Title  <input type="text" id="book-title"  required /></label>
+          <label>Author <input type="text" id="book-author" required /></label>
+          <label>ISBN   <input type="text" id="book-isbn"   required /></label>
+          <button type="submit">Add Book</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>All Books <button id="btn-refresh-books" class="small">Refresh</button></h3>
+        <table id="table-books">
+          <thead>
+            <tr>
+              <th>ID</th><th>Title</th><th>Author</th>
+              <th>ISBN</th><th>Available</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MEMBERS TAB -->
+    <section id="tab-members" class="tab-panel">
+      <h2>Members</h2>
+
+      <div class="card">
+        <h3>Add New Member</h3>
+        <form id="form-add-member">
+          <label>Name       <input type="text"  id="member-name"      required /></label>
+          <label>Student ID <input type="text"  id="member-studentid" placeholder="e.g. STU003" required /></label>
+
+          <!-- RFID Value — the physical card UID, separate from Student ID -->
+          <div class="rfid-widget" id="reg-rfid-widget">
+            <div class="rfid-label-row">
+              <span class="rfid-label-text">RFID Value</span>
+              <button type="button" id="reg-rfid-clear-btn" class="rfid-clear-btn hidden">Clear</button>
+            </div>
+
+            <div class="rfid-tap-zone" id="reg-rfid-tap-zone">
+              <div class="rfid-wave"></div>
+              <div class="rfid-icon">&#x1F4F1;</div>
+              <div class="rfid-tap-text" id="reg-rfid-tap-text">Tap RFID Card to Register</div>
+            </div>
+
+            <!-- Captures fast RFID keystrokes -->
+            <input type="text" id="reg-rfid-scan-input" class="rfid-scan-input" autocomplete="off" tabindex="-1" placeholder="Scan RFID here…" />
+
+            <!-- Holds the captured RFID UID — submitted with form (optional) -->
+            <input type="text" id="member-rfidvalue" class="rfid-value-input" placeholder="or type RFID value…" />
+
+            <div id="reg-rfid-result" class="rfid-result hidden"></div>
+          </div>
+
+          <label>Email <input type="email" id="member-email" required /></label>
+          <button type="submit">Add Member</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>All Members <button id="btn-refresh-members" class="small">Refresh</button></h3>
+        <table id="table-members">
+          <thead>
+            <tr>
+              <th>ID</th><th>Name</th><th>Student ID</th>
+              <th>RFID Value</th><th>Email</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BORROWING TAB -->
+    <section id="tab-borrowing" class="tab-panel">
+      <h2>Borrowing</h2>
+
+      <div class="card">
+        <h3>Borrow a Book</h3>
+        <form id="form-borrow">
+
+          <div class="select-wrapper">
+            <label class="select-label">Book</label>
+            <select id="borrow-bookselect" required>
+              <option value="">— Select a book —</option>
+            </select>
+          </div>
+
+          <!-- RFID Employee Scanner -->
+          <div class="rfid-widget" id="rfid-widget">
+            <div class="rfid-label-row">
+              <span class="rfid-label-text">Employee RFID</span>
+              <button type="button" id="rfid-clear-btn" class="rfid-clear-btn hidden">Clear</button>
+            </div>
+
+            <!-- Tap Zone — click to focus the hidden input -->
+            <div class="rfid-tap-zone" id="rfid-tap-zone">
+              <div class="rfid-wave"></div>
+              <div class="rfid-icon">&#x1F4F1;</div>
+              <div class="rfid-tap-text" id="rfid-tap-text">Tap Employee RFID Card</div>
+            </div>
+
+            <!-- Hidden input that captures RFID keystrokes -->
+            <input type="text"   id="rfid-scan-input" class="rfid-scan-input" autocomplete="off" tabindex="-1" placeholder="Scan RFID here…" />
+
+            <!-- Member info shown after successful scan -->
+            <div id="rfid-result" class="rfid-result hidden"></div>
+
+            <!-- Holds the resolved numeric member ID for the POST body -->
+            <input type="hidden" id="borrow-memberid" />
+          </div>
+
+          <button type="submit" id="btn-borrow" disabled>Borrow</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Return a Book</h3>
+        <form id="form-return">
+          <div class="select-wrapper">
+            <label class="select-label">Book to Return</label>
+            <select id="return-bookselect">
+              <option value="">— Loading borrowed books… —</option>
+            </select>
+          </div>
+
+          <!-- RFID Verification — confirms the returner is the actual borrower -->
+          <div class="rfid-widget" id="return-rfid-widget">
+            <div class="rfid-label-row">
+              <span class="rfid-label-text">Borrower RFID</span>
+              <button type="button" id="return-rfid-clear-btn" class="rfid-clear-btn hidden">Clear</button>
+            </div>
+            <div class="rfid-tap-zone" id="return-rfid-tap-zone">
+              <div class="rfid-wave"></div>
+              <div class="rfid-icon">&#x1F4F1;</div>
+              <div class="rfid-tap-text" id="return-rfid-tap-text">Tap Borrower's RFID Card</div>
+            </div>
+            <input type="text" id="return-rfid-scan-input" class="rfid-scan-input" autocomplete="off" tabindex="-1" placeholder="Scan RFID here…" />
+            <div id="return-rfid-result" class="rfid-result hidden"></div>
+          </div>
+
+          <button type="submit" id="btn-return" disabled>Return</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Borrow History <button id="btn-refresh-borrows" class="small">Refresh</button></h3>
+        <table id="table-borrows">
+          <thead>
+            <tr>
+              <th>ID</th><th>Book Title</th><th>Borrower</th>
+              <th>Borrow Date</th><th>Return Date</th><th>Returned?</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
