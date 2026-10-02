@@ -139,6 +139,31 @@ async function loadBooks() {                                           // Functi
 }
 ```
 
+# Part 1.1 — Button Navigation
+## Allow User to navigate each buttons
+```js
+document.querySelectorAll(".tab-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const tab = button.dataset.tab;
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    document.querySelectorAll(".tab-panel").forEach(panel => {
+      panel.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const panel = document.getElementById(`tab-${tab}`);
+
+    if (panel) {
+      panel.classList.add("active");
+    }
+  });
+});
+```
 ## Student Task
 Replace the TODO inside `loadBooks()` with the code above.
 
@@ -776,6 +801,7 @@ loadMembers().then(() => {                                             // Load m
 refreshBookCache();                                                    // Fill book cache
 loadBorrows();                                                         // Load borrow history table
 ```
+
 
 ## Explanation
 
