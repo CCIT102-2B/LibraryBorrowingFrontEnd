@@ -28,6 +28,7 @@ Students will work inside:
 
 ```txt
 C:\Users\manal\OneDrive\Documents\Study\FrontEnd
+//Location where you place the pulled github
 ```
 
 Main file to edit:
@@ -51,7 +52,8 @@ const API_BASE = "http://localhost:5000/api"; // Base address of the API
 When you write:
 
 ```js
-apiFetch("/books") // Calls http://localhost:5000/api/books
+C:\Users\<username>\Documents\Study\FrontEnd
+// Location where you place the pulled GitHub repository
 ```
 
 ---
