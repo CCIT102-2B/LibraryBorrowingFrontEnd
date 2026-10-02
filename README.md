@@ -24,11 +24,10 @@ RFID scanning        // Match RFID value to a registered member
 
 # Project Files
 
-Students will work inside:
+Students will work inside the `FrontEnd` folder of the project pulled from GitHub, for example:
 
 ```txt
 C:\Users\<username>\Documents\Study\FrontEnd
-//Location where you place the pulled github
 ```
 
 Main file to edit:
@@ -36,6 +35,8 @@ Main file to edit:
 ```txt
 FrontEnd/app.js
 ```
+
+`app.js` already contains the tab switching, toast messages, and the three RFID widgets. Search the file for `// TODO` — those are the places you complete.
 
 Do not edit the API code during this activity. Your task is to connect the existing frontend template to the running API.
 
@@ -49,12 +50,13 @@ At the top of `app.js`, use:
 const API_BASE = "http://localhost:5000/api"; // Base address of the API
 ```
 
-When you write:
+`API_BASE` already ends with `/api`, so the path you give `apiFetch()` starts with the resource name only:
 
-```js
-C:\Users\<username>\Documents\Study\FrontEnd
-//Location where you place the pulled github
-```
+| You write | The browser calls |
+|-----------|-------------------|
+| `apiFetch("/books")` | `http://localhost:5000/api/books` |
+| `apiFetch("/members")` | `http://localhost:5000/api/members` |
+| `apiFetch("/borrows")` | `http://localhost:5000/api/borrows` |
 
 ---
 
@@ -106,7 +108,7 @@ apiFetch("/books") // Short and reusable API call
 GET /api/books
 ```
 
-## Complete Code with Brief Line-by-Line Explanation
+## Complete Code
 
 ```js
 async function loadBooks() {                                           // Function for loading books from API
@@ -117,15 +119,13 @@ async function loadBooks() {                                           // Functi
 
     books.forEach(b => {                                               // Loop through each book object
       const row = document.createElement("tr");                        // Create a new table row
-      row.innerHTML = `                                                // Fill the row using book data
-        <td>${b.id}</td>                                               <!-- Display book ID -->
-        <td>${b.title}</td>                                            <!-- Display book title -->
-        <td>${b.author}</td>                                           <!-- Display book author -->
-        <td>${b.isbn}</td>                                             <!-- Display book ISBN -->
-        <td><span class="badge ${b.isAvailable ? "badge-green" : "badge-red"}">
-              ${b.isAvailable ? "Yes" : "No"}                         <!-- Display availability -->
-            </span></td>
-        <td><button class="btn-delete" data-id="${b.id}">Delete</button></td> <!-- Delete button -->
+      row.innerHTML = `
+        <td>${b.id}</td>
+        <td>${b.title}</td>
+        <td>${b.author}</td>
+        <td>${b.isbn}</td>
+        <td><span class="badge ${b.isAvailable ? "badge-green" : "badge-red"}">${b.isAvailable ? "Yes" : "No"}</span></td>
+        <td><button class="btn-delete" data-id="${b.id}">Delete</button></td>
       `;
 
       row.querySelector(".btn-delete")                                 // Find the Delete button in this row
@@ -133,39 +133,52 @@ async function loadBooks() {                                           // Functi
 
       tbody.appendChild(row);                                          // Add the row to the table
     });
-  } catch (err) {                                                       // Run if API call fails
+  } catch (err) {                                                      // Run if API call fails
     showToast("Could not load books: " + err.message, "error");        // Show error message
   }
 }
 ```
 
-# Part 1.1 — Button Navigation
-## Allow User to navigate each buttons
+## What the row template does
+
+| Cell | Shows |
+|------|-------|
+| 1 | Book ID |
+| 2 | Title |
+| 3 | Author |
+| 4 | ISBN |
+| 5 | Green **Yes** badge if `isAvailable` is true, red **No** badge if false |
+| 6 | Delete button (wired up on the lines after the template) |
+
+> **Careful:** never put `// comments` or `<!-- comments -->` *inside* the backtick (`` ` ``) template. Everything between the backticks becomes real HTML text, so a comment there would show up inside your table.
+
+## Student Task
+Replace the `// TODO` inside `loadBooks()` with the code above.
+
+---
+
+# Part 1.1 — Tab Navigation
+
+## Already provided
+
 ```js
-document.querySelectorAll(".tab-btn").forEach(button => {
-  button.addEventListener("click", () => {
-    const tab = button.dataset.tab;
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
 
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.classList.remove("active");
-    });
-
-    document.querySelectorAll(".tab-panel").forEach(panel => {
-      panel.classList.remove("active");
-    });
-
-    button.classList.add("active");
-
-    const panel = document.getElementById(`tab-${tab}`);
-
-    if (panel) {
-      panel.classList.add("active");
+    if (btn.dataset.tab === "borrowing") {   // Opening the Borrowing tab
+      refreshMemberCache();                  // Get the newest members for RFID lookup
+      populateBorrowBookDropdown();          // Fill the Borrow dropdown
+      populateReturnDropdown();              // Fill the Return dropdown
     }
   });
 });
 ```
-## Student Task
-Replace the TODO inside `loadBooks()` with the code above.
+
+This is already in `app.js`. It switches panels, and it refreshes the dropdowns every time the Borrowing tab opens, so the lists are never stale.
 
 ---
 
@@ -251,7 +264,7 @@ Replace the TODO inside the Add Book form submit listener with the code above.
 GET /api/members
 ```
 
-## Complete Code with Brief Line-by-Line Explanation
+## Complete Code
 
 ```js
 async function loadMembers() {                                          // Function for loading members from API
@@ -267,16 +280,16 @@ async function loadMembers() {                                          // Funct
         ? `<span class="rfid-tag">${m.rfidValue}</span>`                // Show RFID value if present
         : '<span style="color:#a0aec0">—</span>';                       // Show dash if no RFID value
 
-      row.innerHTML = `                                                 // Fill the row with member data
-        <td>${m.id}</td>                                                <!-- Display member ID -->
-        <td>${m.name}</td>                                              <!-- Display name -->
-        <td>${m.studentId}</td>                                         <!-- Display student ID -->
-        <td class="rfid-value-cell">                                   <!-- RFID value cell -->
-          ${rfidDisplay}                                                <!-- Show RFID value or dash -->
-          <button class="btn-set-rfid" title="Assign RFID card">&#9998; Set</button> <!-- Set RFID button -->
+      row.innerHTML = `
+        <td>${m.id}</td>
+        <td>${m.name}</td>
+        <td>${m.studentId}</td>
+        <td class="rfid-value-cell">
+          ${rfidDisplay}
+          <button class="btn-set-rfid" title="Assign RFID card">&#9998; Set</button>
         </td>
-        <td>${m.email}</td>                                             <!-- Display email -->
-        <td><button class="btn-delete" data-id="${m.id}">Delete</button></td> <!-- Delete button -->
+        <td>${m.email}</td>
+        <td><button class="btn-delete" data-id="${m.id}">Delete</button></td>
       `;
 
       row.querySelector(".btn-delete")                                  // Find Delete button
@@ -289,14 +302,25 @@ async function loadMembers() {                                          // Funct
 
       tbody.appendChild(row);                                           // Add row to table
     });
-  } catch (err) {                                                        // Run if API call fails
-    showToast("Could not load members: " + err.message, "error");       // Show error message
+  } catch (err) {                                                       // Run if API call fails
+    showToast("Could not load members: " + err.message, "error");      // Show error message
   }
 }
 ```
 
+## What the row template does
+
+| Cell | Shows |
+|------|-------|
+| 1 | Member ID |
+| 2 | Name |
+| 3 | Student ID |
+| 4 | RFID value (or a dash) and a **Set** button that opens the inline RFID editor |
+| 5 | Email |
+| 6 | Delete button |
+
 ## Student Task
-Replace the TODO inside `loadMembers()` with the code above.
+Replace the `// TODO` inside `loadMembers()` with the code above.
 
 ---
 
@@ -384,10 +408,14 @@ Replace the TODO inside the Add Member form submit listener with the code above.
 PUT /api/members/{id}
 ```
 
-## Complete Code with Brief Line-by-Line Explanation
+## Where this code goes
+
+`saveRfid()` is **inside** the provided function `openInlineRfidEditor(member, cell)`. That is why it can use the variables `input` and `member` without declaring them. Find the `// TODO` inside `saveRfid()` and add the `try / catch` shown below. The first lines (reading `newRfid` and checking it is not empty) are already there.
+
+## Complete Code
 
 ```js
-async function saveRfid() {                                             // Function saves new RFID value
+async function saveRfid() {
   const newRfid = input.value.trim();                                   // Read typed/scanned RFID value
 
   if (!newRfid) {                                                       // Check if RFID value is empty
@@ -397,7 +425,7 @@ async function saveRfid() {                                             // Funct
 
   try {                                                                 // Start error handling block
     await apiFetch(`/members/${member.id}`, {                           // Call PUT /api/members/{id}
-      method: "PUT",                                                   // Use PUT to update full record
+      method: "PUT",                                                    // Use PUT to update full record
       body: {                                                           // Send full member object
         name: member.name,                                              // Keep existing name
         studentId: member.studentId,                                    // Keep existing student ID
@@ -409,7 +437,7 @@ async function saveRfid() {                                             // Funct
     showToast(`RFID set for ${member.name}`);                           // Show success message
     loadMembers();                                                      // Reload members table
     refreshMemberCache();                                               // Refresh RFID lookup cache
-  } catch (err) {                                                        // Run if API call fails
+  } catch (err) {                                                       // Run if API call fails
     showToast(err.message, "error");                                    // Show error message
     loadMembers();                                                      // Restore table display
   }
@@ -418,7 +446,7 @@ async function saveRfid() {                                             // Funct
 
 ## Important Explanation
 
-`PUT` updates the whole member record. That is why the body must include:
+`PUT` updates the whole member record. That is why the body must include all four fields:
 
 ```js
 name       // Existing value
@@ -427,9 +455,13 @@ email      // Existing value
 rfidValue  // New value
 ```
 
+If you leave one out, the API saves it as an empty value.
+
 ---
 
 # Part 8 — Refresh Member Cache
+
+> ✅ **Already provided in `app.js` — read only.** You do not need to type this part. Read it so you understand how the rest of the page uses it.
 
 ## Complete Code with Brief Line-by-Line Explanation
 
@@ -452,6 +484,8 @@ The RFID scanner uses `cachedMembers` to find the member with matching `rfidValu
 ---
 
 # Part 9 — Find Member by RFID Value
+
+> ✅ **Already provided in `app.js` — read only.** You do not need to type this part. Read it so you understand how the rest of the page uses it.
 
 ## Complete Code with Brief Line-by-Line Explanation
 
@@ -484,6 +518,8 @@ m.id
 ---
 
 # Part 10 — Refresh Book Cache
+
+> ✅ **Already provided in `app.js` — read only.** You do not need to type this part. Read it so you understand how the rest of the page uses it.
 
 ## Complete Code with Brief Line-by-Line Explanation
 
@@ -569,8 +605,7 @@ async function populateReturnDropdown() {                               // Funct
   if (!select) return;                                                  // Stop if dropdown does not exist
 
   try {                                                                 // Start error handling block
-    if (!cachedBooks.length) await refreshBookCache();                  // Load books if cache is empty
-    if (!cachedMembers.length) await refreshMemberCache();              // Load members if cache is empty
+    await Promise.all([refreshBookCache(), refreshMemberCache()]);      // Always load fresh books and members
 
     const records = await apiFetch("/borrows");                         // Load all borrow records
     const unreturned = records.filter(r => !r.isReturned);              // Keep records not yet returned
@@ -727,11 +762,13 @@ The return RFID widget verifies the borrower first. The Return button is enabled
 GET /api/borrows
 ```
 
-## Complete Code with Brief Line-by-Line Explanation
+## Complete Code
 
 ```js
 async function loadBorrows() {                                          // Function loads borrow history
   try {                                                                 // Start error handling block
+    await Promise.all([refreshBookCache(), refreshMemberCache()]);      // Get fresh books and members first
+
     const records = await apiFetch("/borrows");                         // Call GET /api/borrows
     const tbody = document.querySelector("#table-borrows tbody");       // Select borrow table body
     tbody.innerHTML = "";                                               // Clear old rows
@@ -744,20 +781,18 @@ async function loadBorrows() {                                          // Funct
       const memberName = member ? member.name : `Member #${r.memberId}`; // Show name or fallback
 
       const row = document.createElement("tr");                         // Create table row
-      row.innerHTML = `                                                 // Fill row with borrow details
-        <td>${r.id}</td>                                                <!-- Borrow record ID -->
-        <td>${bookTitle}</td>                                           <!-- Book title -->
-        <td>${memberName}</td>                                          <!-- Borrower name -->
-        <td>${new Date(r.borrowDate).toLocaleDateString()}</td>         <!-- Borrow date -->
-        <td>${r.returnDate ? new Date(r.returnDate).toLocaleDateString() : "—"}</td> <!-- Return date -->
-        <td><span class="badge ${r.isReturned ? "badge-green" : "badge-red"}">
-              ${r.isReturned ? "Yes" : "No"}                           <!-- Returned status -->
-            </span></td>
+      row.innerHTML = `
+        <td>${r.id}</td>
+        <td>${bookTitle}</td>
+        <td>${memberName}</td>
+        <td>${new Date(r.borrowDate).toLocaleDateString()}</td>
+        <td>${r.returnDate ? new Date(r.returnDate).toLocaleDateString() : "—"}</td>
+        <td><span class="badge ${r.isReturned ? "badge-green" : "badge-red"}">${r.isReturned ? "Yes" : "No"}</span></td>
       `;
 
       tbody.appendChild(row);                                           // Add row to table
     });
-  } catch (err) {                                                        // Run if API call fails
+  } catch (err) {                                                       // Run if API call fails
     showToast("Could not load borrow records: " + err.message, "error"); // Show error message
   }
 }
@@ -765,7 +800,7 @@ async function loadBorrows() {                                          // Funct
 
 ## Explanation
 
-The API gives IDs:
+The API only gives IDs:
 
 ```js
 bookId
@@ -778,6 +813,11 @@ The frontend converts them into readable names using:
 cachedBooks
 cachedMembers
 ```
+
+Notice the first line inside `try`: the caches are refreshed **before** the table is built. Without it, a page that has just opened (or a member who was just added) would show `Book #1` and `Member #2` instead of real names.
+
+## Student Task
+Replace the `// TODO` inside `loadBorrows()` with the code above.
 
 ---
 
@@ -802,36 +842,44 @@ refreshBookCache();                                                    // Fill b
 loadBorrows();                                                         // Load borrow history table
 ```
 
-
 ## Explanation
 
 This runs automatically when the page opens.
 
 The order matters because RFID and dropdowns need member and book data.
 
+In `app.js` the first lines (`loadBooks()`, `loadMembers().then(...)`, `initRFID()` and so on) are already written. Your job is the `// TODO` inside the `.then()`: add `populateBorrowBookDropdown()` and `populateReturnDropdown()` there, after the three RFID widgets are created.
+
 ---
 
 # Full Implementation Checklist
 
-Students must complete these sections in `FrontEnd/app.js`:
+Complete every `// TODO` in `FrontEnd/app.js`:
 
 ```txt
-[ ] loadBooks()
-[ ] deleteBook(id)
-[ ] Add Book form submit
-[ ] loadMembers()
-[ ] deleteMember(id)
-[ ] Add Member form submit
-[ ] saveRfid()
-[ ] refreshMemberCache()
-[ ] findMemberByRFID()
-[ ] refreshBookCache()
-[ ] populateBorrowBookDropdown()
-[ ] populateReturnDropdown()
-[ ] Borrow form submit
-[ ] Return form submit
-[ ] loadBorrows()
-[ ] Initial page load calls
+[ ] Part 1  — loadBooks()
+[ ] Part 2  — deleteBook(id)
+[ ] Part 3  — Add Book form submit
+[ ] Part 4  — loadMembers()
+[ ] Part 5  — deleteMember(id)
+[ ] Part 6  — Add Member form submit
+[ ] Part 7  — saveRfid()  (inside openInlineRfidEditor)
+[ ] Part 11 — populateBorrowBookDropdown()
+[ ] Part 12 — populateReturnDropdown()
+[ ] Part 13 — Borrow form submit
+[ ] Part 14 — Return form submit
+[ ] Part 15 — loadBorrows()
+[ ] Part 16 — Initial page load (dropdown calls)
+```
+
+Already provided — read them, do not rewrite them:
+
+```txt
+apiFetch(), showToast(), tab navigation (Part 1.1)
+refreshMemberCache()  (Part 8)
+findMemberByRFID()    (Part 9)
+refreshBookCache()    (Part 10)
+initRFID(), initRegRFID(), initReturnRFID()  (RFID widgets)
 ```
 
 ---
@@ -852,6 +900,16 @@ Open:
 ```txt
 FrontEnd/index.html
 ```
+
+> **Sample data the API starts with** (it is reset every time you run `dotnet run`):
+>
+> | Type | Data |
+> |------|------|
+> | Books | Clean Code, The Pragmatic Programmer (available) · C# in Depth (borrowed) |
+> | Members | Alice Johnson — RFID `A1B2C3D4` · Bob Smith — RFID `E5F6A7B8` |
+> | Borrow record | C# in Depth is borrowed by Alice |
+>
+> You can type these RFID values into the scan boxes and press **Enter** to simulate tapping a card.
 
 ## 3. Test Books
 
@@ -886,7 +944,7 @@ FrontEnd/index.html
 
 ```txt
 1. Select a borrowed book from the Return dropdown.
-2. Tap the RFID card of the original borrower.
+2. Tap the RFID card of the original borrower (for the sample data: Alice, `A1B2C3D4`). Bob's card should be rejected with "Card mismatch".
 3. Return button should enable.
 4. Click Return.
 5. The book should become available again.
@@ -906,6 +964,34 @@ Fix:
 cd API
 dotnet run
 ```
+
+---
+
+## Error: Table shows `Book #1` or `Member #2` instead of names
+
+The caches were empty when the table was built. Make sure `loadBorrows()` starts with:
+
+```js
+await Promise.all([refreshBookCache(), refreshMemberCache()]);
+```
+
+---
+
+## Error: `Cannot read properties of undefined (reading 'reset')`
+
+`rfid`, `regRfid`, or `returnRfid` is used before it was created. They are created inside the `loadMembers().then(...)` block in Part 16. Check that you did not delete or move those three lines.
+
+---
+
+## Error: Dropdown is empty on first load
+
+Add `populateBorrowBookDropdown()` and `populateReturnDropdown()` inside the `.then()` block in Part 16 (the `// TODO` there).
+
+---
+
+## Error: Stray text like `// Display book ID` appears inside a table cell
+
+A comment was typed *inside* a backtick template string. Remove everything that is not real HTML from between the backticks.
 
 ---
 
@@ -950,6 +1036,7 @@ Check:
 4. Why does RFID matching use `rfidValue` instead of `studentId`?
 5. Why do we refresh tables after adding, deleting, borrowing, or returning?
 6. Why does the Return dropdown use borrow record ID instead of book ID?
+7. Why does `loadBorrows()` refresh `cachedBooks` and `cachedMembers` before building the table?
 
 ---
 
