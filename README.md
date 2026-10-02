@@ -27,7 +27,7 @@ RFID scanning        // Match RFID value to a registered member
 Students will work inside:
 
 ```txt
-C:\Users\manal\OneDrive\Documents\Study\FrontEnd
+C:\Users\<username>\Documents\Study\FrontEnd
 //Location where you place the pulled github
 ```
 
@@ -53,7 +53,7 @@ When you write:
 
 ```js
 C:\Users\<username>\Documents\Study\FrontEnd
-// Location where you place the pulled GitHub repository
+//Location where you place the pulled github
 ```
 
 ---
