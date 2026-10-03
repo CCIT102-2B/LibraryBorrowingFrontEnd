@@ -60,17 +60,26 @@ git --version
 
 **Expected result:** a version number such as `git version 2.45.0`. If you get "command not found", install Git from https://git-scm.com and reopen the terminal.
 
-## Step 2 — Clone the repository
+## Step 2 — Clone the two repositories
 
-Go to the `Study` folder and clone the repo into a folder named `FrontEnd`:
+The project has two repositories: the **API** (the .NET backend) and the **FrontEnd** (the page you will write code for). Clone both into your `Study` folder, using folder names that match the rest of this sheet:
 
 ```bash
 cd C:\Users\<username>\Documents\Study
+git clone https://github.com/CCIT102-2B/LibraryBorrowingAPI.git API
 git clone https://github.com/CCIT102-2B/LibraryBorrowingFrontEnd.git FrontEnd
 cd FrontEnd
 ```
 
-The `FrontEnd` at the end of the clone command makes the folder name match the rest of this sheet.
+Your folders should now look like this:
+
+```txt
+Study/
+├── API/        ← LibraryBorrowingAPI (you only run this)
+└── FrontEnd/   ← LibraryBorrowingFrontEnd (you work here)
+```
+
+The names `API` and `FrontEnd` at the end of each clone command make the folder names match the rest of this sheet.
 
 ## Step 3 — Create your branch
 
@@ -110,6 +119,31 @@ git push -u origin IT2B_S2013101834_ManaloJohnEubert
 **Expected result:** the output ends with a line like `Branch 'IT2B_S2013101834_ManaloJohnEubert' set up to track 'origin/...'`. Open https://github.com/CCIT102-2B/LibraryBorrowingFrontEnd, click the branch drop-down, and confirm your branch is listed.
 
 > If Git asks you to sign in, use your GitHub account. If a password is rejected, GitHub requires a **personal access token** instead of your account password — your instructor will show you how to make one.
+
+## Step 6 — Run the API to make sure it works
+
+You do **not** create a branch for the API. You only run it, and you never edit its code in this activity.
+
+1. Check that the .NET SDK 8.0 or newer is installed:
+
+   ```bash
+   dotnet --version
+   ```
+
+   **Expected result:** a version number starting with `8` or higher. If the command is not found, install the .NET 8 SDK from https://dotnet.microsoft.com/download.
+
+2. Start the API:
+
+   ```bash
+   cd C:\Users\<username>\Documents\Study\API
+   dotnet run
+   ```
+
+   **Expected result:** the output includes `Now listening on: http://localhost:5000`. Leave this terminal open.
+
+3. Open http://localhost:5000 in your browser. **Expected result:** the **Swagger UI** page listing the Books, Members and Borrows endpoints.
+
+To stop the API, click the terminal and press `Ctrl+C`.
 
 From this point on, do all of your work (creating `app.js`, editing, testing) on this branch. Run `git branch` any time you are unsure which branch you are on.
 
@@ -1137,7 +1171,8 @@ Type this at the bottom of `app.js`, after every function it calls has been defi
 Your finished `FrontEnd/app.js` must contain:
 
 ```txt
-[ ] Repo cloned and branch created (Section_StudentNumber_LastNameFirstName)
+[ ] API and FrontEnd repos cloned; API runs and shows Swagger at http://localhost:5000
+[ ] FrontEnd branch created (Section_StudentNumber_LastNameFirstName)
 [ ] API_BASE and apiFetch()
 [ ] Part 1   — loadBooks()
 [ ] Part 1.1 — Tab navigation
@@ -1257,6 +1292,18 @@ Fix:
 cd API
 dotnet run
 ```
+
+---
+
+## Error: `dotnet` is not recognized
+
+The .NET SDK is not installed (or the terminal was open during installation). Install the .NET 8 SDK, close the terminal, open a new one, and run `dotnet --version` again.
+
+---
+
+## Error: `Address already in use` / port 5000 is busy
+
+Another copy of the API is already running. Press `Ctrl+C` in that terminal (or close it) and run `dotnet run` again.
 
 ---
 
