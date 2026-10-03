@@ -4,7 +4,7 @@
 **Library Borrowing System — API to Frontend Implementation**
 
 ## Objective
-Students will complete `FrontEnd/app.js` by writing JavaScript code that connects the HTML frontend to the .NET Web API.
+Students will create `FrontEnd/app.js` and write the JavaScript code that connects the HTML frontend to the .NET Web API.
 
 This activity uses:
 
@@ -30,13 +30,15 @@ Students will work inside the `FrontEnd` folder of the project pulled from GitHu
 C:\Users\<username>\Documents\Study\FrontEnd
 ```
 
-Main file to edit:
+Main file you will create:
 
 ```txt
 FrontEnd/app.js
 ```
 
-`app.js` already contains the tab switching, toast messages, and the three RFID widgets. Search the file for `// TODO` — those are the places you complete.
+`index.html` and `style.css` are already in the folder. Create a new file named `app.js` next to them (`index.html` loads it). Work through the parts below in order and type each part's code into `app.js`.
+
+The RFID widget functions (`initRFID()`, `initRegRFID()`, `initReturnRFID()`, `openInlineRfidEditor()`) and `showToast()` are helper code supplied by your instructor. Make sure they are in `app.js` too, because the parts below call them.
 
 Do not edit the API code during this activity. Your task is to connect the existing frontend template to the running API.
 
@@ -60,7 +62,7 @@ const API_BASE = "http://localhost:5000/api"; // Base address of the API
 
 ---
 
-# Provided Helper Code: `apiFetch()`
+# Helper Code: `apiFetch()`
 
 Use this helper for all API calls.
 
@@ -156,7 +158,7 @@ async function loadBooks() {                                           // Functi
 
 # Part 1.1 — Tab Navigation
 
-## Already provided
+## Complete Code
 
 ```js
 document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -175,7 +177,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 });
 ```
 
-This is already in `app.js`. It switches panels, and it refreshes the dropdowns every time the Borrowing tab opens, so the lists are never stale.
+Add this to `app.js`. It switches panels, and it refreshes the dropdowns every time the Borrowing tab opens, so the lists are never stale.
 
 ---
 
@@ -206,9 +208,6 @@ async function deleteBook(id) {                                        // Functi
   }
 }
 ```
-
-## Student Task
-Replace the TODO inside `deleteBook(id)` with the code above.
 
 ---
 
@@ -247,9 +246,6 @@ document.getElementById("form-add-book").addEventListener("submit", async e => {
   }
 });
 ```
-
-## Student Task
-Replace the TODO inside the Add Book form submit listener with the code above.
 
 ---
 
@@ -316,9 +312,6 @@ async function loadMembers() {                                          // Funct
 | 5 | Email |
 | 6 | Delete button |
 
-## Student Task
-Replace the `// TODO` inside `loadMembers()` with the code above.
-
 ---
 
 # Part 5 — Delete Member
@@ -348,9 +341,6 @@ async function deleteMember(id) {                                       // Funct
   }
 }
 ```
-
-## Student Task
-Replace the TODO inside `deleteMember(id)` with the code above.
 
 ---
 
@@ -392,9 +382,6 @@ document.getElementById("form-add-member").addEventListener("submit", async e =>
 });
 ```
 
-## Student Task
-Replace the TODO inside the Add Member form submit listener with the code above.
-
 ---
 
 # Part 7 — Update Existing Member RFID
@@ -407,7 +394,7 @@ PUT /api/members/{id}
 
 ## Where this code goes
 
-`saveRfid()` is **inside** the provided function `openInlineRfidEditor(member, cell)`. That is why it can use the variables `input` and `member` without declaring them. Find the `// TODO` inside `saveRfid()` and add the `try / catch` shown below. The first lines (reading `newRfid` and checking it is not empty) are already there.
+`saveRfid()` lives **inside** the function `openInlineRfidEditor(member, cell)`. That is why it can use the variables `input` and `member` without declaring them.
 
 ## Complete Code
 
@@ -458,8 +445,6 @@ If you leave one out, the API saves it as an empty value.
 
 # Part 8 — Refresh Member Cache
 
-> ✅ **Already provided in `app.js` — read only.** You do not need to type this part. Read it so you understand how the rest of the page uses it.
-
 ## Complete Code with Brief Line-by-Line Explanation
 
 ```js
@@ -481,8 +466,6 @@ The RFID scanner uses `cachedMembers` to find the member with matching `rfidValu
 ---
 
 # Part 9 — Find Member by RFID Value
-
-> ✅ **Already provided in `app.js` — read only.** You do not need to type this part. Read it so you understand how the rest of the page uses it.
 
 ## Complete Code with Brief Line-by-Line Explanation
 
@@ -515,8 +498,6 @@ m.id
 ---
 
 # Part 10 — Refresh Book Cache
-
-> ✅ **Already provided in `app.js` — read only.** You do not need to type this part. Read it so you understand how the rest of the page uses it.
 
 ## Complete Code with Brief Line-by-Line Explanation
 
@@ -813,9 +794,6 @@ cachedMembers
 
 Notice the first line inside `try`: the caches are refreshed **before** the table is built. Without it, a page that has just opened (or a member who was just added) would show `Book #1` and `Member #2` instead of real names.
 
-## Student Task
-Replace the `// TODO` inside `loadBorrows()` with the code above.
-
 ---
 
 # Part 16 — Initial Page Load
@@ -845,38 +823,34 @@ This runs automatically when the page opens.
 
 The order matters because RFID and dropdowns need member and book data.
 
-In `app.js` the first lines (`loadBooks()`, `loadMembers().then(...)`, `initRFID()` and so on) are already written. Your job is the `// TODO` inside the `.then()`: add `populateBorrowBookDropdown()` and `populateReturnDropdown()` there, after the three RFID widgets are created.
+Type this at the bottom of `app.js`, after every function it calls has been defined. The calls to `populateBorrowBookDropdown()` and `populateReturnDropdown()` must be inside the `.then()`, after the three RFID widgets are created.
 
 ---
 
 # Full Implementation Checklist
 
-Complete every `// TODO` in `FrontEnd/app.js`:
+Your finished `FrontEnd/app.js` must contain:
 
 ```txt
-[ ] Part 1  — loadBooks()
-[ ] Part 2  — deleteBook(id)
-[ ] Part 3  — Add Book form submit
-[ ] Part 4  — loadMembers()
-[ ] Part 5  — deleteMember(id)
-[ ] Part 6  — Add Member form submit
-[ ] Part 7  — saveRfid()  (inside openInlineRfidEditor)
-[ ] Part 11 — populateBorrowBookDropdown()
-[ ] Part 12 — populateReturnDropdown()
-[ ] Part 13 — Borrow form submit
-[ ] Part 14 — Return form submit
-[ ] Part 15 — loadBorrows()
-[ ] Part 16 — Initial page load (dropdown calls)
-```
-
-Already provided — read them, do not rewrite them:
-
-```txt
-apiFetch(), showToast(), tab navigation (Part 1.1)
-refreshMemberCache()  (Part 8)
-findMemberByRFID()    (Part 9)
-refreshBookCache()    (Part 10)
-initRFID(), initRegRFID(), initReturnRFID()  (RFID widgets)
+[ ] API_BASE and apiFetch()
+[ ] Part 1   — loadBooks()
+[ ] Part 1.1 — Tab navigation
+[ ] Part 2   — deleteBook(id)
+[ ] Part 3   — Add Book form submit
+[ ] Part 4   — loadMembers()
+[ ] Part 5   — deleteMember(id)
+[ ] Part 6   — Add Member form submit
+[ ] Part 7   — saveRfid() (inside openInlineRfidEditor)
+[ ] Part 8   — refreshMemberCache()
+[ ] Part 9   — findMemberByRFID()
+[ ] Part 10  — refreshBookCache()
+[ ] Part 11  — populateBorrowBookDropdown()
+[ ] Part 12  — populateReturnDropdown()
+[ ] Part 13  — Borrow form submit
+[ ] Part 14  — Return form submit
+[ ] Part 15  — loadBorrows()
+[ ] Part 16  — Initial page load
+[ ] Instructor-supplied helpers: showToast(), initRFID(), initRegRFID(), initReturnRFID(), openInlineRfidEditor()
 ```
 
 ---
@@ -982,7 +956,7 @@ await Promise.all([refreshBookCache(), refreshMemberCache()]);
 
 ## Error: Dropdown is empty on first load
 
-Add `populateBorrowBookDropdown()` and `populateReturnDropdown()` inside the `.then()` block in Part 16 (the `// TODO` there).
+Add `populateBorrowBookDropdown()` and `populateReturnDropdown()` inside the `.then()` block in Part 16, after the three RFID widgets are created.
 
 ---
 
