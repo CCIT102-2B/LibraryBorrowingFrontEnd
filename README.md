@@ -152,9 +152,6 @@ async function loadBooks() {                                           // Functi
 
 > **Careful:** never put `// comments` or `<!-- comments -->` *inside* the backtick (`` ` ``) template. Everything between the backticks becomes real HTML text, so a comment there would show up inside your table.
 
-## Student Task
-Replace the `// TODO` inside `loadBooks()` with the code above.
-
 ---
 
 # Part 1.1 — Tab Navigation
