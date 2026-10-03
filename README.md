@@ -62,6 +62,34 @@ const API_BASE = "http://localhost:5000/api"; // Base address of the API
 
 ---
 
+# Testing as You Go
+
+Test each part right after you write it. Do not wait until the end — a bug is much easier to find when only one new thing has changed.
+
+**Before every test**
+
+1. Start the API: `cd API` then `dotnet run` (leave it running).
+2. Open `FrontEnd/index.html` in your browser. After you edit `app.js`, **refresh the page** (`F5`, or `Ctrl+F5` if the old code seems to stick).
+3. Open the browser's developer tools with **`F12`**. You will use two tabs:
+   - **Console** — shows red error messages, and lets you type code to test a function directly.
+   - **Network** — shows every API call. Click a call to see its method, URL, status (200, 204, 404...) and the data sent and received.
+
+**Sample data the API starts with** (reset every time you stop and re-run `dotnet run`):
+
+| Type | Data |
+|------|------|
+| Books | 1 Clean Code (available) · 2 The Pragmatic Programmer (available) · 3 C# in Depth (borrowed) |
+| Members | 1 Alice Johnson — RFID `A1B2C3D4` · 2 Bob Smith — RFID `E5F6A7B8` |
+| Borrow record | 1 — C# in Depth borrowed by Alice, not returned |
+
+**Simulating an RFID card:** no reader needed. Click the tap zone, type the RFID value, and press **Enter**.
+
+**Tip:** if something goes wrong and the data gets messy, stop the API (`Ctrl+C`) and run `dotnet run` again to reset everything.
+
+**How to read a test:** each "Test This Part" lists what to do and the **Expected result**. If the result is different, check the Console for a red error first.
+
+---
+
 # Helper Code: `apiFetch()`
 
 Use this helper for all API calls.
@@ -99,6 +127,22 @@ async function apiFetch(path, options = {}) {                         // Create 
 ```js
 apiFetch("/books") // Short and reusable API call
 ```
+
+## Test This Part
+
+Test it directly in the Console (no page change needed):
+
+1. Open the page, press `F12`, and click the **Console** tab.
+2. Type this and press Enter:
+   ```js
+   await apiFetch("/books")
+   ```
+   **Expected result:** an array of 3 book objects.
+3. Type this:
+   ```js
+   await apiFetch("/books/999")
+   ```
+   **Expected result:** a red error: `Book 999 not found.` This proves `apiFetch()` turns a 404 into a JavaScript error, which is what your `catch` blocks rely on.
 
 ---
 
@@ -154,6 +198,14 @@ async function loadBooks() {                                           // Functi
 
 > **Careful:** never put `// comments` or `<!-- comments -->` *inside* the backtick (`` ` ``) template. Everything between the backticks becomes real HTML text, so a comment there would show up inside your table.
 
+## Test This Part
+
+1. Refresh `index.html` and open the **Books** tab.
+2. **Expected result:** a table with 3 rows. *Clean Code* and *The Pragmatic Programmer* have a green **Yes** badge; *C# in Depth* has a red **No** badge. Each row has a Delete button.
+3. Open the **Network** tab and refresh again. **Expected result:** one `books` request with method `GET` and status `200`.
+4. Click the **Refresh** button above the table. **Expected result:** the table reloads and a new `GET books` appears in Network.
+5. **Error test:** stop the API (`Ctrl+C`), then click Refresh. **Expected result:** a red toast like `Could not load books: Failed to fetch`. Restart the API afterwards.
+
 ---
 
 # Part 1.1 — Tab Navigation
@@ -178,6 +230,12 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 ```
 
 Add this to `app.js`. It switches panels, and it refreshes the dropdowns every time the Borrowing tab opens, so the lists are never stale.
+
+## Test This Part
+
+1. Click each tab: **Books**, **Members**, **Borrowing**.
+2. **Expected result:** the clicked tab is highlighted and only its panel is visible.
+3. Open the **Network** tab, then click **Borrowing**. **Expected result:** new requests for `members`, `books` and `borrows` appear (they fill the dropdowns).
 
 ---
 
@@ -208,6 +266,15 @@ async function deleteBook(id) {                                        // Functi
   }
 }
 ```
+
+## Test This Part
+
+Add a book first (Part 3), or use *The Pragmatic Programmer* — you can restart the API to get it back.
+
+1. Click **Delete** on a book. A confirm box appears.
+2. Click **Cancel**. **Expected result:** nothing happens and no request appears in Network.
+3. Click **Delete** again and press **OK**. **Expected result:** a green toast `Book deleted.`, the row disappears, and Network shows `DELETE books/<id>` with status `204`.
+4. Open the **Borrowing** tab. **Expected result:** the deleted book is no longer in the Borrow dropdown.
 
 ---
 
@@ -246,6 +313,14 @@ document.getElementById("form-add-book").addEventListener("submit", async e => {
   }
 });
 ```
+
+## Test This Part
+
+1. On the **Books** tab, fill in the form: Title `Test Book`, Author `Test Author`, ISBN `123-456`.
+2. Click **Add Book**.
+3. **Expected result:** a green toast `Book added!`, the form clears, and a new row appears with the next ID (4 if you started fresh), a green **Yes** badge, and the values you typed. The page does not reload.
+4. In Network, click the `books` POST request and open **Payload**. **Expected result:** `{"title":"Test Book","author":"Test Author","isbn":"123-456"}` with status `201`.
+5. Open the **Borrowing** tab. **Expected result:** *Test Book (Test Author)* is in the Borrow dropdown.
 
 ---
 
@@ -312,6 +387,13 @@ async function loadMembers() {                                          // Funct
 | 5 | Email |
 | 6 | Delete button |
 
+## Test This Part
+
+1. Refresh the page and open the **Members** tab.
+2. **Expected result:** 2 rows — Alice Johnson (`STU001`, RFID tag `A1B2C3D4`, `alice@uni.edu`) and Bob Smith (`STU002`, RFID tag `E5F6A7B8`, `bob@uni.edu`). Each row has a **Set** button and a Delete button.
+3. Network shows `GET members` with status `200`.
+4. **Check the dash:** add a member with no RFID (Part 6). **Expected result:** that row shows `—` instead of an RFID tag.
+
 ---
 
 # Part 5 — Delete Member
@@ -341,6 +423,15 @@ async function deleteMember(id) {                                       // Funct
   }
 }
 ```
+
+## Test This Part
+
+Delete a member you added yourself (Part 6) so you keep the sample data.
+
+1. Click **Delete** on that member and press **OK**.
+2. **Expected result:** a green toast `Member deleted.`, the row disappears, and Network shows `DELETE members/<id>` with status `204`.
+3. **Cache check:** open the Console and type `cachedMembers.length`. **Expected result:** the number matches the rows in the table.
+4. Pressing **Cancel** on the confirm box must do nothing.
 
 ---
 
@@ -381,6 +472,15 @@ document.getElementById("form-add-member").addEventListener("submit", async e =>
   }
 });
 ```
+
+## Test This Part
+
+1. On the **Members** tab, fill in Name `Test Member`, Student ID `STU999`, Email `test@uni.edu`.
+2. Click the RFID tap zone, type `TEST1234`, and press **Enter**. **Expected result:** the zone shows "RFID captured ✔" and the RFID value box fills in.
+3. Click **Add Member**.
+4. **Expected result:** a green toast `Member added!`, the form **and** the RFID widget reset, and a new row with RFID tag `TEST1234`.
+5. In Network, click the `members` POST request and open **Payload**. **Expected result:** it contains `name`, `studentId`, `email` and `rfidValue`.
+6. **Duplicate warning:** type `A1B2C3D4` in the tap zone. **Expected result:** a warning "ID already registered" appears (you can still save, but do not).
 
 ---
 
@@ -441,6 +541,16 @@ rfidValue  // New value
 
 If you leave one out, the API saves it as an empty value.
 
+## Test This Part
+
+1. On the **Members** tab, click **✎ Set** on Bob Smith. **Expected result:** the RFID cell turns into a small text box with ✓ and ✕ buttons.
+2. Type `NEWCARD1` and press **Enter** (or click ✓).
+3. **Expected result:** a green toast `RFID set for Bob Smith`, and Bob's row now shows `NEWCARD1`. His name, student ID and email are unchanged.
+4. In Network, click the `members/2` PUT request. **Expected result:** status `204`, and the Payload contains all four fields (`name`, `studentId`, `email`, `rfidValue`).
+5. **Empty test:** click Set, leave the box empty, and press Enter. **Expected result:** a red toast `Scan or type an RFID value first.` and no request is sent.
+6. **Cancel test:** click Set, then press **Esc** or ✕. **Expected result:** the original RFID value comes back.
+7. **Use it:** go to the Borrowing tab and tap `NEWCARD1`. **Expected result:** Bob is recognised (this also tests Part 8). Set Bob back to `E5F6A7B8` when you finish, or restart the API.
+
 ---
 
 # Part 8 — Refresh Member Cache
@@ -462,6 +572,16 @@ async function refreshMemberCache() {                                   // Funct
 ## Explanation
 
 The RFID scanner uses `cachedMembers` to find the member with matching `rfidValue`.
+
+## Test This Part
+
+In the Console:
+
+```js
+await refreshMemberCache(); cachedMembers
+```
+
+**Expected result:** an array of your members (2 with the sample data). Add a member in the Members tab, run the same line again, and the array grows by 1.
 
 ---
 
@@ -495,6 +615,20 @@ m.studentId
 m.id
 ```
 
+## Test This Part
+
+In the Console (run `await refreshMemberCache()` first):
+
+```js
+findMemberByRFID("A1B2C3D4")      // Alice's object
+findMemberByRFID("a1b2c3d4")      // Alice's object (case does not matter)
+findMemberByRFID("  E5F6A7B8  ")  // Bob's object (spaces are trimmed)
+findMemberByRFID("UNKNOWN")       // null
+findMemberByRFID("STU001")        // null  (student ID must NOT match)
+```
+
+**Expected result:** the comments show what each line should return. The last line proves matching uses `rfidValue`, not `studentId`.
+
 ---
 
 # Part 10 — Refresh Book Cache
@@ -520,6 +654,16 @@ The frontend uses `cachedBooks` to:
 - Show book titles in Borrow History
 - Fill the Borrow Book dropdown
 - Fill the Return Book dropdown
+
+## Test This Part
+
+In the Console:
+
+```js
+await refreshBookCache(); cachedBooks
+```
+
+**Expected result:** an array of all books (3 with the sample data). Add a book in the Books tab, run it again, and the array grows by 1.
 
 ---
 
@@ -568,6 +712,13 @@ select.value // Example: "1"
 ```
 
 That value becomes the `bookId`.
+
+## Test This Part
+
+1. Open the **Borrowing** tab and look at the **Select a book** dropdown.
+2. **Expected result:** it lists only available books — `Clean Code (Robert C. Martin)` and `The Pragmatic Programmer (Andrew Hunt)`. *C# in Depth* is **not** listed because it is borrowed.
+3. In the Console, select a book and type `document.getElementById("borrow-bookselect").value`. **Expected result:** the book's ID, such as `"1"` — not the title.
+4. **Empty test:** delete or borrow every available book. **Expected result:** the dropdown says `— No books available —`.
 
 ---
 
@@ -631,6 +782,13 @@ That is needed for:
 PUT /api/borrows/5/return
 ```
 
+## Test This Part
+
+1. Open the **Borrowing** tab and look at the **Return a Book** dropdown.
+2. **Expected result:** one option: `C# in Depth ← Alice Johnson`.
+3. Select it, then in the Console type `document.getElementById("return-bookselect").value`. **Expected result:** `"1"` — the **borrow record ID**, not the book ID (`3`).
+4. **Empty test:** after returning every book, the dropdown says `— No books currently borrowed —`.
+
 ---
 
 # Part 13 — Borrow a Book
@@ -685,6 +843,26 @@ The request body sent to the API is:
 }
 ```
 
+## Test This Part
+
+1. Open the **Borrowing** tab. The **Borrow** button should be disabled.
+2. Select `Clean Code`.
+3. Click the RFID tap zone, type `A1B2C3D4`, and press **Enter**. **Expected result:** "Card recognised ✔", Alice Johnson's name appears, and the **Borrow** button turns on.
+4. Click **Borrow**.
+5. **Expected result:**
+   - a green toast `Book borrowed successfully!`
+   - the form and the RFID widget reset
+   - the **Borrowing History** table has a new row: *Clean Code*, *Alice Johnson*, today's date, return date `—`, a red **No** badge
+   - on the **Books** tab, *Clean Code* now shows a red **No**
+   - *Clean Code* is gone from the Borrow dropdown and now appears in the Return dropdown
+   - Network shows `POST borrows` with status `201` and payload `{"bookId":1,"memberId":1}`
+6. **Unknown card test:** tap `ZZZ999`. **Expected result:** "Card not recognised ✖" and the Borrow button stays disabled.
+7. **API error test:** in the Console, try to borrow the already-borrowed book:
+   ```js
+   await apiFetch("/borrows", { method: "POST", body: { bookId: 3, memberId: 1 } })
+   ```
+   **Expected result:** an error `Book 'C# in Depth' is not available.` (this is the message your `catch` would show in the toast).
+
 ---
 
 # Part 14 — Return a Book
@@ -729,6 +907,21 @@ document.getElementById("form-return").addEventListener("submit", async e => { /
 ## Explanation
 
 The return RFID widget verifies the borrower first. The Return button is enabled only after RFID matches the original borrower.
+
+## Test This Part
+
+1. Open the **Borrowing** tab. In **Return a Book**, select `C# in Depth ← Alice Johnson`. The **Return** button should be disabled.
+2. **Wrong card test:** tap Bob's card (`E5F6A7B8`). **Expected result:** "Card mismatch ✖", a message that the book was borrowed by Alice Johnson, and the Return button stays disabled.
+3. Clear the widget and tap Alice's card (`A1B2C3D4`). **Expected result:** "Verified ✔" and the **Return** button turns on.
+4. Click **Return**.
+5. **Expected result:**
+   - a green toast `Book returned successfully!`
+   - the form and the RFID widget reset
+   - the history row for that record now has a return date and a green **Yes** badge
+   - on the **Books** tab, *C# in Depth* is a green **Yes** again
+   - *C# in Depth* is back in the Borrow dropdown and gone from the Return dropdown
+   - Network shows `PUT borrows/1/return` with status `204`
+6. **Double-return test:** in the Console, run `await apiFetch("/borrows/1/return", { method: "PUT" })`. **Expected result:** an error `This book has already been returned.`
 
 ---
 
@@ -794,6 +987,13 @@ cachedMembers
 
 Notice the first line inside `try`: the caches are refreshed **before** the table is built. Without it, a page that has just opened (or a member who was just added) would show `Book #1` and `Member #2` instead of real names.
 
+## Test This Part
+
+1. Refresh the page and look at the **Borrowing History** table.
+2. **Expected result:** one row from the sample data — ID `1`, **C# in Depth**, **Alice Johnson**, a borrow date from 5 days ago, return date `—`, and a red **No** badge. The Book and Borrower columns show real names, **not** `Book #3` / `Member #1`.
+3. Borrow and return a book (Parts 13 and 14). **Expected result:** each action adds or updates a row without a page refresh.
+4. Click the **Refresh** button above the table. **Expected result:** a new `GET borrows` request appears in Network.
+
 ---
 
 # Part 16 — Initial Page Load
@@ -825,6 +1025,18 @@ The order matters because RFID and dropdowns need member and book data.
 
 Type this at the bottom of `app.js`, after every function it calls has been defined. The calls to `populateBorrowBookDropdown()` and `populateReturnDropdown()` must be inside the `.then()`, after the three RFID widgets are created.
 
+## Test This Part
+
+1. Close the tab and open `index.html` again (or press `F5`).
+2. **Without clicking anything**, check that:
+   - the **Books** table is filled
+   - the **Members** table is filled
+   - the **Borrowing History** table is filled with real names
+   - the Borrow and Return dropdowns have options (open the Borrowing tab)
+   - the RFID tap zones react when you click them
+3. Check the **Console**. **Expected result:** no red errors.
+4. **If a dropdown is empty or a tap zone does nothing,** the problem is almost always in this part: the calls are missing, or they run before the RFID widgets are created.
+
 ---
 
 # Full Implementation Checklist
@@ -855,7 +1067,9 @@ Your finished `FrontEnd/app.js` must contain:
 
 ---
 
-# Testing Steps
+# Testing Steps — Full Run-Through
+
+The tests inside each part check one piece at a time. Do this final run once everything is finished, starting from a fresh `dotnet run`, to check that all the pieces work together.
 
 ## 1. Start the API
 
@@ -872,15 +1086,7 @@ Open:
 FrontEnd/index.html
 ```
 
-> **Sample data the API starts with** (it is reset every time you run `dotnet run`):
->
-> | Type | Data |
-> |------|------|
-> | Books | Clean Code, The Pragmatic Programmer (available) · C# in Depth (borrowed) |
-> | Members | Alice Johnson — RFID `A1B2C3D4` · Bob Smith — RFID `E5F6A7B8` |
-> | Borrow record | C# in Depth is borrowed by Alice |
->
-> You can type these RFID values into the scan boxes and press **Enter** to simulate tapping a card.
+> Use the sample data listed in **Testing as You Go** near the top of this sheet.
 
 ## 3. Test Books
 
