@@ -4,7 +4,7 @@
 **Library Borrowing System — API to Frontend Implementation**
 
 ## Objective
-Students will write the whole of `app.js` in the **LibraryBorrowingFrontEnd** repository so that the HTML frontend works with the .NET Web API from the **LibraryBorrowingAPI** repository.
+Students will write the whole of `FrontEnd/app.js` so that the HTML frontend works with the .NET Web API.
 
 This activity uses:
 
@@ -41,7 +41,7 @@ Follow these rules.
 3. **Do not skip a part.** Skipping Part 4 leaves the tabs dead. Skipping Part 12 breaks every RFID box. Skipping Part 16 leaves the Return button doing nothing.
 4. **Keep the order.** The `let` variables (Part 1) must come before any code that uses them. The page-load code (Part 18) must be last.
 5. **`saveRfid()` lives inside `openInlineRfidEditor()`** (Part 11). It is not a top-level function.
-6. **Take screenshots as you go.** Each part ends with a "📸 Screenshot" line. You paste them into **one Word or Google Doc**. Set up your folder and document (see **Screenshot Evidence — Setup**) **before Part 1**, after you have cloned both projects.
+6. **Take screenshots as you go.** Each part ends with a "📸 Screenshot" line. You paste them into **one Word or Google Doc**. Set up your folder and document (see **Screenshot Evidence — Setup**) **before Part 1**.
 7. **Remove the `rfid.js` script tag from `index.html`** if it is there:
 
 ```html
@@ -104,7 +104,7 @@ dotnet --list-sdks      # Lists every installed SDK
 
 If you see `'dotnet' is not recognized`, install it (next step).
 
-Also match the SDK to the API project. Open `LibraryAPI.csproj` in the `LibraryBorrowingAPI` folder and look for:
+Also match the SDK to the API project. Open `API/*.csproj` and look for:
 
 ```xml
 <TargetFramework>net8.0</TargetFramework>
@@ -136,7 +136,7 @@ After installing, **close and reopen the terminal**, then run `dotnet --version`
 The port is not always `5000`. Start the API and read the console:
 
 ```bash
-cd LibraryBorrowingAPI
+cd API
 dotnet run
 ```
 
@@ -178,55 +178,53 @@ app.UseCors();
 
 ---
 
-# Get the Two Projects from GitHub
+# Get the Projects from GitHub (Clone)
 
-The activity uses **two repositories** in the `CCIT102-2A` organization:
+The activity uses **two repositories** in the `CCIT102-2A` organization. Clone both into one parent folder (for example `Study`), and give the clones the folder names `API` and `FrontEnd`:
 
-| Repository | What it is | What you do with it |
-|---|---|---|
-| `CCIT102-2A/LibraryBorrowingAPI` | The .NET Web API | **Clone and run it.** Do not edit it. |
-| `CCIT102-2A/LibraryBorrowingFrontEnd` | The HTML page and `app.js` | **Fork it, clone your fork, and write `app.js`.** You also submit your screenshot document here by pull request. |
-
-## 1. Clone the API (no fork needed)
+| Repository | Clone into folder |
+|---|---|
+| https://github.com/CCIT102-2A/LibraryBorrowingAPI | `API` |
+| https://github.com/CCIT102-2A/LibraryBorrowingFrontEnd | `FrontEnd` |
 
 ```bash
 cd C:\Users\<you>\Documents
-git clone https://github.com/CCIT102-2A/LibraryBorrowingAPI.git
+mkdir Study
+cd Study
+git clone https://github.com/CCIT102-2A/LibraryBorrowingAPI.git API
+git clone https://github.com/CCIT102-2A/LibraryBorrowingFrontEnd.git FrontEnd
 ```
 
-## 2. Fork the FrontEnd, then clone your fork
+The last word in each command is the folder name. Do not skip it, or the folders will be named `LibraryBorrowingAPI` and `LibraryBorrowingFrontEnd` and the paths in this sheet will not match.
 
-1. Open https://github.com/CCIT102-2A/LibraryBorrowingFrontEnd and click **Fork**. Choose **your own GitHub account** as the owner.
-2. Clone **your fork** (use your GitHub username):
-
-```bash
-cd C:\Users\<you>\Documents
-git clone https://github.com/<your-username>/LibraryBorrowingFrontEnd.git
-```
-
-3. Link the original repository so you can get updates later:
-
-```bash
-cd LibraryBorrowingFrontEnd
-git remote add upstream https://github.com/CCIT102-2A/LibraryBorrowingFrontEnd.git
-```
-
-To check: `git remote -v` must show `origin` (your fork) and `upstream` (CCIT102-2A).
-
-You now have two sibling folders:
+You now have:
 
 ```txt
-Documents/
-  LibraryBorrowingAPI/          <- run this with `dotnet run`, do not edit
-    Controllers/  Models/  Program.cs  LibraryAPI.csproj  appsettings.json
-  LibraryBorrowingFrontEnd/     <- you work here
-    app.js          <- the only code file you edit
-    index.html      <- already built (only delete the rfid.js script tag if present)
-    style.css       <- already built
-    Screenshots/    <- you add your own folder here (see Screenshot Evidence)
+Study/
+  API/        <- the .NET Web API (its own git repository)
+  FrontEnd/   <- the HTML page and app.js (its own git repository)
 ```
 
-Open **`LibraryBorrowingFrontEnd`** in VS Code. Run the API from **`LibraryBorrowingAPI`**.
+Each folder is a **separate** git repository. Run `dotnet run` inside `API`. Do your editing and git commands inside `FrontEnd`.
+
+---
+
+# Project Files
+
+Students will work inside:
+
+```txt
+FrontEnd/
+  app.js        <- the only file you edit
+  index.html    <- already built (only delete the rfid.js script tag if present)
+  style.css     <- already built
+```
+
+Main file to edit:
+
+```txt
+FrontEnd/app.js
+```
 
 **Tip:** Save your work often. If `app.js` breaks, undo with `Ctrl+Z` rather than starting over.
 
@@ -266,10 +264,10 @@ This is an activity, so you prove your work with screenshots. You will paste abo
 
 ## A. Create your folder (once)
 
-Inside your `LibraryBorrowingFrontEnd` folder, the `Screenshots/` folder holds one folder per student. If `Screenshots/` does not exist yet, create it. Then create **your** folder inside it and name it with your student ID and your name, no spaces:
+Inside the project, the `FrontEnd/Screenshots/` folder holds one folder per student. If `Screenshots/` does not exist yet, create it. Then create **your** folder inside it and name it with your student ID and your name, no spaces:
 
 ```txt
-LibraryBorrowingFrontEnd/
+FrontEnd/
   Screenshots/
     S2013101834_JohnEubertManalo/
       S2013101834_JohnEubertManalo.docx
@@ -1805,7 +1803,7 @@ Take a screenshot of the page-load code at the very bottom of `app.js`. Follow t
 
 # Full Implementation Checklist
 
-Students must write all of these in `app.js`, in this order:
+Students must write all of these in `FrontEnd/app.js`, in this order:
 
 ```txt
 [ ] Part 1  API_BASE, shared variables, apiFetch()
@@ -1861,18 +1859,18 @@ Press `Ctrl+F` in `app.js` and confirm each count:
 ## 1. Start the API
 
 ```bash
-cd LibraryBorrowingAPI
+cd API
 dotnet run
 ```
 
 Note the `Now listening on: http://localhost:XXXX` line. The port must match `API_BASE` in `app.js`. Confirm by opening `http://localhost:XXXX/api/books` in the browser (you should see JSON). Keep this terminal open while testing.
 
-## 2. Open the FrontEnd (the `LibraryBorrowingFrontEnd` folder)
+## 2. Open the FrontEnd
 
 Open:
 
 ```txt
-LibraryBorrowingFrontEnd/index.html
+FrontEnd/index.html
 ```
 
 Press `F12` and watch the **Console** tab. Any red error there tells you what is wrong.
@@ -1990,17 +1988,20 @@ Tick each caption before you submit.
 
 # Submit Your Document by Pull Request
 
-Goal: your pull request (PR) contains **exactly one new file**, your `.docx`, inside your own folder under `Screenshots/` in the **`CCIT102-2A/LibraryBorrowingFrontEnd`** repository. It must **not** contain `app.js`, `index.html`, `style.css`, or anything else. Your instructor reviews the PR and merges it if it is correct.
+Goal: your pull request (PR) contains **exactly one new file**, your `.docx`, inside your own folder under `FrontEnd/Screenshots/`. It must **not** contain `app.js`, `index.html`, the `API` folder, or anything else. Your instructor reviews the PR and merges it if it is correct.
+
+`FrontEnd` is its own git repository (you cloned it from `CCIT102-2A/LibraryBorrowingFrontEnd`), so run every git command **inside the `FrontEnd` folder**. In git commands, your folder is written as `Screenshots/S<ID>_<Name>`.
 
 Your `app.js` will show as modified (`M`) in VS Code. That is normal. **Do not commit it.**
 
 ## Steps
 
-1. **Finish and save your document** inside `Screenshots/S<ID>_<Name>/` in your `LibraryBorrowingFrontEnd` folder (see **Screenshot Evidence — Setup**).
+1. **Finish and save your document** inside `FrontEnd/Screenshots/S<ID>_<Name>/` (see **Screenshot Evidence — Setup**).
 
-2. **Open a terminal in your `LibraryBorrowingFrontEnd` folder** and check the status:
+2. **Open a terminal in the `FrontEnd` folder** and check the status:
 
 ```bash
+cd C:\Users\<you>\Documents\Study\FrontEnd
 git status
 ```
 
@@ -2043,23 +2044,20 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-7. **Push your branch to your fork** (`origin` is your fork, so you do not need permission to the instructor's repository):
+7. **Push your branch:**
 
 ```bash
 git push -u origin submission/S2020000000
 ```
 
-8. **Open the Pull Request.** On your fork's page on GitHub, click **Compare & pull request**, then check these fields carefully:
+8. **Open the Pull Request.** On GitHub, click **Compare & pull request**, then set:
 
 | Field | Value |
 |---|---|
 | Base repository | `CCIT102-2A/LibraryBorrowingFrontEnd` |
 | Base branch | `main` |
-| Head repository | `<your-username>/LibraryBorrowingFrontEnd` |
 | Compare branch | `submission/S2020000000` |
 | Title | `Screenshots - S2020000000 John Gilbert Señido` |
-
-**Check the base repository.** Both repositories started as copies of `CCIT102-2B/LibraryBorrowingFrontEnd`, so GitHub may preselect the wrong one. If the base repository says `CCIT102-2B`, click it and change it to `CCIT102-2A/LibraryBorrowingFrontEnd`.
 
 Click **Create pull request**.
 
@@ -2083,8 +2081,8 @@ git commit -a
 |---|---|
 | `git add` staged `app.js` (before commit) | `git restore --staged app.js`, then check again with `git diff --cached --name-only` |
 | Committed `app.js` but **did not push yet** | `git reset --soft HEAD~1`, then `git restore --staged .`, then stage only your folder again |
-| The PR shows extra files, or the base repository is `CCIT102-2B` | Close the PR and tell your instructor. Do not delete files yourself. |
-| `fatal: not a git repository` | You are in the wrong folder. `cd` into your `LibraryBorrowingFrontEnd` folder. |
+| The PR shows extra files | Close the PR and tell your instructor. Do not delete files yourself. |
+| `fatal: not a git repository` | You are in the wrong folder. `cd` into your `FrontEnd` folder. |
 | The `.docx` is too big (over 20 MB) | In Word, select a picture, then `Picture Format → Compress Pictures`. Do not paste full-screen 4K images. |
 | Blurry or half-visible code | Zoom the editor with `Ctrl +`, then take the screenshot of the function again |
 | The folder name has a special character (for example `ñ`) and Git shows odd text | Use the plain letter (`n`) in both the folder and file name, and tell your instructor |
@@ -2196,7 +2194,7 @@ The API is not running.
 Fix:
 
 ```bash
-cd LibraryBorrowingAPI
+cd API
 dotnet run
 ```
 
