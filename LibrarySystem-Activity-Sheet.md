@@ -4,7 +4,7 @@
 **Library Borrowing System — API to Frontend Implementation**
 
 ## Objective
-Students will complete `FrontEnd/app.js` by writing JavaScript code that connects the HTML frontend to the .NET Web API.
+Students will write the whole of `FrontEnd/app.js` so that the HTML frontend works with the .NET Web API.
 
 This activity uses:
 
@@ -22,43 +22,63 @@ RFID scanning        // Match RFID value to a registered member
 
 ---
 
-# READ THIS FIRST — Rules for Editing `app.js`
+# READ THIS FIRST — How `app.js` Works in This Activity
 
-Most problems in this activity come from pasting code in the wrong place. Follow these five rules.
+**`app.js` starts empty.** It contains only a comment:
 
-1. **Never replace the whole file.** `app.js` already contains template code (`showToast()`, `initRFID()`, `initRegRFID()`, `initReturnRFID()`, `openInlineRfidEditor()`, and variable declarations). If you delete it, the page breaks with `showToast is not defined` or `initRFID is not defined`. Only fill in the TODO sections.
-2. **Paste each part exactly once.** Pasting the same listener twice (for example the Borrow form) sends two requests for one click, and the second one fails.
-3. **Do not skip a part.** If Part 14 (Return form) is missing, the Return button does nothing.
-4. **Paste code where the sheet says.** `saveRfid()` goes **inside** `openInlineRfidEditor()`, not at the top level of the file.
-5. **Never paste parts marked "Already provided in the template."** They already exist in `app.js`.
+```js
+// ============================================================
+// PLACE CODE HERE, PLEASE DELETE THIS COMMENT
+// ============================================================
+```
+
+Nothing is provided for you. There is **no** `rfid.js`, and no helper code is hidden in `index.html`. Everything the page needs goes into `app.js`: the API helper, the toast message, the caches, the tabs, the RFID scanners and every table, form and dropdown.
+
+Follow these rules.
+
+1. **Delete the `PLACE CODE HERE` comment**, then paste the parts **in order**, Part 1 to Part 18, into one `app.js`.
+2. **Paste each part exactly once.** A repeated `let` gives `Identifier '...' has already been declared`. A repeated event listener sends two requests for one click.
+3. **Do not skip a part.** Skipping Part 4 leaves the tabs dead. Skipping Part 12 breaks every RFID box. Skipping Part 16 leaves the Return button doing nothing.
+4. **Keep the order.** The `let` variables (Part 1) must come before any code that uses them. The page-load code (Part 18) must be last.
+5. **`saveRfid()` lives inside `openInlineRfidEditor()`** (Part 11). It is not a top-level function.
+6. **Remove the `rfid.js` script tag from `index.html`** if it is there:
+
+```html
+<script src="rfid.js"></script>   <!-- DELETE this line: the file does not exist -->
+<script src="app.js"></script>
+```
 
 ## Paste Map
 
-| Part | What it is | Where it goes |
+| Part | What it is | Where it goes in `app.js` |
 |---|---|---|
-| 1 | `loadBooks()` | Replace the TODO in `loadBooks()` |
-| 2 | `deleteBook(id)` | Replace the TODO in `deleteBook(id)` |
-| 3 | Add Book submit listener | Replace the TODO in the `form-add-book` listener |
-| 4 | `loadMembers()` | Replace the TODO in `loadMembers()` |
-| 5 | `deleteMember(id)` | Replace the TODO in `deleteMember(id)` |
-| 6 | Add Member submit listener | Replace the TODO in the `form-add-member` listener |
-| 7 | `saveRfid()` | **Inside** `openInlineRfidEditor()`, replacing its `saveRfid()` TODO |
-| 8, 9, 10 | Caches and `findMemberByRFID()` | **Do not paste.** Already provided |
-| 11 | `populateBorrowBookDropdown()` | Replace the TODO in that function |
-| 12 | `populateReturnDropdown()` | Replace the TODO in that function |
-| 13 | Borrow submit listener | Replace the TODO in the `form-borrow` listener (**once only**) |
-| 14 | Return submit listener | Replace the TODO in the `form-return` listener (**do not forget**) |
-| 15 | `loadBorrows()` | Replace the TODO in `loadBorrows()` |
-| 16 | Initial page load calls | Bottom of the file, replacing the TODO |
+| 1 | `API_BASE`, shared variables, `apiFetch()` | Very top |
+| 2 | `showToast()` | After Part 1 |
+| 3 | Caches and `findMemberByRFID()` | After Part 2 |
+| 4 | Tab buttons and Refresh buttons | After Part 3 |
+| 5 | `loadBooks()` | After Part 4 |
+| 6 | `deleteBook(id)` | After Part 5 |
+| 7 | Add Book listener | After Part 6 (**once only**) |
+| 8 | `loadMembers()` | After Part 7 |
+| 9 | `deleteMember(id)` | After Part 8 |
+| 10 | Add Member listener | After Part 9 |
+| 11 | `openInlineRfidEditor()` with `saveRfid()` inside | After Part 10 |
+| 12 | RFID widgets: `createRfidWidget`, `initRFID`, `initRegRFID`, `initReturnRFID` | After Part 11 |
+| 13 | `populateBorrowBookDropdown()` | After Part 12 |
+| 14 | `populateReturnDropdown()` | After Part 13 |
+| 15 | Borrow listener | After Part 14 (**once only**) |
+| 16 | Return listener | After Part 15 (**do not skip**) |
+| 17 | `loadBorrows()` | After Part 16 |
+| 18 | Initial page load | **Last** |
 
 ---
 
 # How to Copy the Code
 
-Each code section has **two** blocks:
+Each code section has a **clean code block** first and an explanation after it.
 
-1. **Clean code block** (shown first). Use its **Copy** button. It contains only code, with no comments, so it is safe to paste into `app.js`.
-2. **"Line-by-line explanation"** (shown right after). This is the same code with comments. Read it to learn, but do not copy from it.
+1. **Clean code block.** Use its **Copy** button. It has no comments, so it is safe to paste into `app.js`.
+2. **Explanation.** Read it to learn. Where it is a commented copy of the code, do not copy from it.
 
 ---
 
@@ -125,7 +145,7 @@ Look for a line like:
 Now listening on: http://localhost:5000
 ```
 
-If the port is different (for example `5123`), change `API_BASE` in `app.js` to match the port printed by `dotnet run`:
+If the port is different (for example `5123`), change `API_BASE` in `app.js` (Part 1) to match the port printed by `dotnet run`:
 
 ```js
 const API_BASE = "http://localhost:5123/api";
@@ -162,7 +182,10 @@ app.UseCors();
 Students will work inside:
 
 ```txt
-C:\Users\manal\OneDrive\Documents\Study\FrontEnd
+FrontEnd/
+  app.js        <- the only file you edit
+  index.html    <- already built (only delete the rfid.js script tag if present)
+  style.css     <- already built
 ```
 
 Main file to edit:
@@ -171,35 +194,42 @@ Main file to edit:
 FrontEnd/app.js
 ```
 
-**Tip:** Before you start, make a backup copy of the original template (for example `app.template.js`). If something breaks, you can restore the template parts from it.
+**Tip:** Save your work often. If `app.js` breaks, undo with `Ctrl+Z` rather than starting over.
 
-Do not edit the API code during this activity. Your task is to connect the existing frontend template to the running API.
+Do not edit the API code during this activity. Your task is to connect the existing HTML page to the running API.
 
 ---
 
-# API Base URL
+# What the HTML Page Expects
 
-At the top of `app.js`, use:
+`app.js` finds elements by `id`, so the names must match `index.html`. The important ones:
+
+| Area | Ids used by `app.js` |
+|---|---|
+| Tabs | `.tab-btn` buttons with `data-tab`, and panels `#tab-books`, `#tab-members`, `#tab-borrowing` |
+| Refresh | `btn-refresh-books`, `btn-refresh-members`, `btn-refresh-borrows` |
+| Books | `form-add-book`, `book-title`, `book-author`, `book-isbn`, `table-books` |
+| Members | `form-add-member`, `member-name`, `member-studentid`, `member-email`, `member-rfidvalue`, `table-members` |
+| Borrow | `form-borrow`, `borrow-bookselect`, `borrow-memberid`, `btn-borrow` |
+| Return | `form-return`, `return-bookselect`, `btn-return` |
+| History | `table-borrows` |
+| Toast | `toast` |
+| RFID boxes | `rfid-…`, `reg-rfid-…`, `return-rfid-…` (each with `tap-zone`, `tap-text`, `scan-input`, `result`, `clear-btn`) |
+
+---
+
+# Part 1 — Settings, Shared Variables and `apiFetch()`
+
+## Complete Code
 
 ```js
 const API_BASE = "http://localhost:5000/api";
-```
 
-(Use the port printed by `dotnet run`. See Prerequisites, step 3.)
+let cachedMembers = [];
+let cachedBooks = [];
+let cachedUnreturnedBorrows = [];
+let rfid, regRfid, returnRfid;
 
-When you write:
-
-```js
-apiFetch("/books") // Calls http://localhost:5000/api/books
-```
-
----
-
-# Provided Helper Code: `apiFetch()`
-
-Use this helper for all API calls. It is already in the template.
-
-```js
 async function apiFetch(path, options = {}) {
   const url = API_BASE + path;
   const defaults = { headers: { "Content-Type": "application/json" } };
@@ -225,7 +255,7 @@ async function apiFetch(path, options = {}) {
 }
 ```
 
-**Line-by-line explanation (commented version, for reading only — do not copy):**
+**`apiFetch()` line-by-line explanation (commented version, for reading only — do not copy):**
 
 ```js
 async function apiFetch(path, options = {}) {                         // Create reusable async API helper
@@ -253,17 +283,165 @@ async function apiFetch(path, options = {}) {                         // Create 
 }
 ```
 
-## Brief Explanation
+## Explanation
 
-`apiFetch()` prevents repeated code. Instead of writing a long `fetch()` call every time, students call:
+- `API_BASE` already includes `/api`, so write `apiFetch("/books")`, never `apiFetch("/api/books")`.
+- `cachedMembers`, `cachedBooks` and `cachedUnreturnedBorrows` hold the latest data from the API so the RFID and dropdown code can look things up without a new request each time.
+- `rfid`, `regRfid` and `returnRfid` will hold the three RFID widgets. They are filled in Part 18.
+- `apiFetch()` prevents repeated code. Instead of a long `fetch()` call every time, you write `apiFetch("/books")`.
 
-```js
-apiFetch("/books") // Short and reusable API call
-```
+## Where to paste
+At the very top of `app.js`, after deleting the `PLACE CODE HERE` comment.
 
 ---
 
-# Part 1 — Load Books into Table
+# Part 2 — Toast Messages
+
+## Complete Code
+
+```js
+let toastTimer;
+
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.add("hidden"), 3000);
+}
+```
+
+## Explanation
+
+`showToast("Book added!")` shows a small green message. `showToast("Something failed", "error")` shows an error. The message hides itself after 3 seconds. It writes into the `<div id="toast">` already in `index.html`.
+
+Every `catch` block in this activity calls `showToast()`, so it must exist before anything else runs.
+
+## Where to paste
+Directly after Part 1.
+
+---
+
+# Part 3 — Caches and Find Member by RFID
+
+## Complete Code
+
+```js
+async function refreshMemberCache() {
+  try {
+    cachedMembers = await apiFetch("/members");
+  } catch {
+    cachedMembers = [];
+  }
+}
+
+async function refreshBookCache() {
+  try {
+    cachedBooks = await apiFetch("/books");
+  } catch {
+    cachedBooks = [];
+  }
+}
+
+function findMemberByRFID(scannedValue) {
+  const trimmed = scannedValue.trim();
+
+  return cachedMembers.find(
+    m => m.rfidValue &&
+         m.rfidValue.toLowerCase() === trimmed.toLowerCase()
+  ) || null;
+}
+```
+
+**Line-by-line explanation (commented version, for reading only — do not copy):**
+
+```js
+async function refreshMemberCache() {                                   // Function updates member cache
+  try {                                                                 // Start error handling block
+    cachedMembers = await apiFetch("/members");                         // Load members from API into cache
+  } catch {                                                             // Run if API call fails
+    cachedMembers = [];                                                 // Use empty array to avoid errors
+  }
+}
+
+async function refreshBookCache() {                                     // Function updates book cache
+  try {                                                                 // Start error handling block
+    cachedBooks = await apiFetch("/books");                             // Load books from API into cache
+  } catch {                                                             // Run if API call fails
+    cachedBooks = [];                                                   // Use empty array to avoid errors
+  }
+}
+
+function findMemberByRFID(scannedValue) {                               // Function receives scanned RFID value
+  const trimmed = scannedValue.trim();                                  // Remove extra spaces
+
+  return cachedMembers.find(                                            // Search members array
+    m => m.rfidValue &&                                                 // Make sure member has RFID value
+         m.rfidValue.toLowerCase() === trimmed.toLowerCase()            // Compare RFID values case-insensitively
+  ) || null;                                                            // Return found member or null
+}
+```
+
+## Explanation
+
+- The RFID scanner uses `cachedMembers` to find the member with the matching `rfidValue`.
+- The frontend uses `cachedBooks` to show book titles in Borrow History and to fill the Borrow and Return dropdowns.
+- RFID matching must use `m.rfidValue`. Do not match against `m.studentId` or `m.id`.
+
+## Where to paste
+After Part 2. The `let cachedMembers` and `let cachedBooks` lines are already in Part 1, so do not declare them again.
+
+---
+
+# Part 4 — Tabs and Refresh Buttons
+
+## Complete Code
+
+```js
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+
+document.getElementById("btn-refresh-books").addEventListener("click", () => {
+  loadBooks();
+  populateBorrowBookDropdown();
+});
+
+document.getElementById("btn-refresh-members").addEventListener("click", async () => {
+  await loadMembers();
+  await refreshMemberCache();
+});
+
+document.getElementById("btn-refresh-borrows").addEventListener("click", async () => {
+  await refreshBookCache();
+  await refreshMemberCache();
+  loadBorrows();
+  populateReturnDropdown();
+});
+```
+
+## Explanation
+
+- Each tab button has `data-tab="books"` (or `members`, `borrowing`). The matching panel has `id="tab-books"` and so on.
+- On click, the code removes `active` from every button and panel, then adds `active` to the clicked button and its panel.
+- Without this part, the tabs look like buttons but do nothing.
+- The Refresh buttons reload the table next to them.
+
+## Where to paste
+After Part 3.
+
+---
+
+# Part 5 — Load Books into Table
 
 ## Endpoint
 
@@ -337,12 +515,12 @@ async function loadBooks() {                                           // Functi
 }
 ```
 
-## Student Task
-Replace the TODO inside `loadBooks()` with the code above.
+## Where to paste
+After Part 4.
 
 ---
 
-# Part 2 — Delete Book
+# Part 6 — Delete Book
 
 ## Endpoint
 
@@ -390,12 +568,12 @@ async function deleteBook(id) {                                        // Functi
 }
 ```
 
-## Student Task
-Replace the TODO inside `deleteBook(id)` with the code above.
+## Where to paste
+After Part 5.
 
 ---
 
-# Part 3 — Add Book
+# Part 7 — Add Book
 
 ## Endpoint
 
@@ -459,12 +637,12 @@ document.getElementById("form-add-book").addEventListener("submit", async e => {
 });
 ```
 
-## Student Task
-Replace the TODO inside the Add Book form submit listener with the code above.
+## Where to paste
+After Part 6. **Paste it once only.** If `form-add-book` appears twice in `app.js`, every click adds the book twice.
 
 ---
 
-# Part 4 — Load Members into Table
+# Part 8 — Load Members into Table
 
 ## Endpoint
 
@@ -560,12 +738,12 @@ async function loadMembers() {                                          // Funct
 }
 ```
 
-## Student Task
-Replace the TODO inside `loadMembers()` with the code above.
+## Where to paste
+After Part 7.
 
 ---
 
-# Part 5 — Delete Member
+# Part 9 — Delete Member
 
 ## Endpoint
 
@@ -613,12 +791,12 @@ async function deleteMember(id) {                                       // Funct
 }
 ```
 
-## Student Task
-Replace the TODO inside `deleteMember(id)` with the code above.
+## Where to paste
+After Part 8.
 
 ---
 
-# Part 6 — Add Member with RFID Value
+# Part 10 — Add Member with RFID Value
 
 ## Endpoint
 
@@ -686,12 +864,12 @@ document.getElementById("form-add-member").addEventListener("submit", async e =>
 });
 ```
 
-## Student Task
-Replace the TODO inside the Add Member form submit listener with the code above.
+## Where to paste
+After Part 9.
 
 ---
 
-# Part 7 — Update Existing Member RFID
+# Part 11 — Inline RFID Editor and Update Member RFID
 
 ## Endpoint
 
@@ -702,92 +880,70 @@ PUT /api/members/{id}
 ## Complete Code
 
 ```js
-async function saveRfid() {
-  const newRfid = input.value.trim();
-
-  if (!newRfid) {
-    showToast("Scan or type an RFID value first.", "error");
-    return;
-  }
-
-  try {
-    await apiFetch(`/members/${member.id}`, {
-      method: "PUT",
-      body: {
-        name: member.name,
-        studentId: member.studentId,
-        email: member.email,
-        rfidValue: newRfid
-      }
-    });
-
-    showToast(`RFID set for ${member.name}`);
-    loadMembers();
-    refreshMemberCache();
-  } catch (err) {
-    showToast(err.message, "error");
-    loadMembers();
-  }
-}
-```
-
-**Line-by-line explanation (commented version, for reading only — do not copy):**
-
-```js
-async function saveRfid() {                                             // Function saves new RFID value
-  const newRfid = input.value.trim();                                   // Read typed/scanned RFID value
-
-  if (!newRfid) {                                                       // Check if RFID value is empty
-    showToast("Scan or type an RFID value first.", "error");            // Show validation message
-    return;                                                             // Stop function
-  }
-
-  try {                                                                 // Start error handling block
-    await apiFetch(`/members/${member.id}`, {                           // Call PUT /api/members/{id}
-      method: "PUT",                                                   // Use PUT to update full record
-      body: {                                                           // Send full member object
-        name: member.name,                                              // Keep existing name
-        studentId: member.studentId,                                    // Keep existing student ID
-        email: member.email,                                            // Keep existing email
-        rfidValue: newRfid                                              // Update RFID value
-      }
-    });
-
-    showToast(`RFID set for ${member.name}`);                           // Show success message
-    loadMembers();                                                      // Reload members table
-    refreshMemberCache();                                               // Refresh RFID lookup cache
-  } catch (err) {                                                        // Run if API call fails
-    showToast(err.message, "error");                                    // Show error message
-    loadMembers();                                                      // Restore table display
-  }
-}
-```
-
-## Where this code goes (important)
-
-> **Do NOT paste this at the top level of `app.js`.**
-
-`saveRfid()` uses `input` and `member`, which only exist inside `openInlineRfidEditor(member, cell)`. Find `openInlineRfidEditor`, then find the `saveRfid()` TODO **inside it**, and replace that TODO with this function.
-
-Correct shape:
-
-```js
+// Inline editor shown in the RFID cell when "Set" is clicked.
+// saveRfid() lives INSIDE this function because it needs `input` and `member`.
 function openInlineRfidEditor(member, cell) {
-  // ... template code that creates `input` ...
+  cell.innerHTML = `
+    <input type="text" class="rfid-inline-input" placeholder="Scan or type RFID…" autocomplete="off" />
+    <button type="button" class="btn-save-rfid">Save</button>
+    <button type="button" class="btn-cancel-rfid">Cancel</button>
+  `;
+
+  const input = cell.querySelector(".rfid-inline-input");
+  input.value = member.rfidValue || "";
 
   async function saveRfid() {
-    // <-- paste the body of the code above here
+    const newRfid = input.value.trim();
+
+    if (!newRfid) {
+      showToast("Scan or type an RFID value first.", "error");
+      return;
+    }
+
+    const owner = findMemberByRFID(newRfid);
+    if (owner && owner.id !== member.id) {
+      showToast(`That RFID already belongs to ${owner.name}.`, "error");
+      return;
+    }
+
+    try {
+      await apiFetch(`/members/${member.id}`, {
+        method: "PUT",
+        body: {
+          name: member.name,
+          studentId: member.studentId,
+          email: member.email,
+          rfidValue: newRfid
+        }
+      });
+
+      showToast(`RFID set for ${member.name}`);
+      loadMembers();
+      refreshMemberCache();
+    } catch (err) {
+      showToast(err.message, "error");
+      loadMembers();
+    }
   }
 
-  // ... template code that uses saveRfid ...
+  cell.querySelector(".btn-save-rfid").addEventListener("click", saveRfid);
+  cell.querySelector(".btn-cancel-rfid").addEventListener("click", loadMembers);
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); saveRfid(); }
+    if (e.key === "Escape") loadMembers();
+  });
+
+  input.focus();
+  input.select();
 }
 ```
 
-If you paste it at the top level, clicking Save shows `input is not defined` or `member is not defined`.
+## Explanation
 
-## Important Explanation
-
-`PUT` updates the whole member record. That is why the body must include:
+- Clicking **Set** in the Members table calls `openInlineRfidEditor(m, cell)` (see Part 8). It swaps the RFID cell for a text box with **Save** and **Cancel** buttons.
+- `saveRfid()` is declared **inside** this function because it needs `input` and `member`. At the top level of the file those names do not exist, which causes `input is not defined`.
+- `PUT` updates the whole member record, so the body must include every field:
 
 ```js
 name       // Existing value
@@ -796,136 +952,199 @@ email      // Existing value
 rfidValue  // New value
 ```
 
+- Before saving, the code checks that no other member already has the same RFID.
+- A scanner types the value and presses **Enter**, so Enter saves and **Esc** cancels.
+
+## Where to paste
+After Part 10, as one complete function.
+
 ---
 
-# Part 8 — Refresh Member Cache
+# Part 12 — RFID Widgets (Borrow, Register, Return)
 
-> **Already provided in the template.** `app.js` already contains this code. Read it, but do **not** paste it again. Declaring it twice causes `Identifier '...' has already been declared` and the whole script stops.
-
-## Code (for reading only)
+## Complete Code
 
 ```js
-let cachedMembers = [];
+// Shared builder. `prefix` matches the element ids in index.html:
+//   "rfid", "reg-rfid", "return-rfid"
+function createRfidWidget(prefix, idleText, onScan, onReset) {
+  const tapZone = document.getElementById(`${prefix}-tap-zone`);
+  const tapText = document.getElementById(`${prefix}-tap-text`);
+  const scanInput = document.getElementById(`${prefix}-scan-input`);
+  const result = document.getElementById(`${prefix}-result`);
+  const clearBtn = document.getElementById(`${prefix}-clear-btn`);
 
-async function refreshMemberCache() {
-  try {
-    cachedMembers = await apiFetch("/members");
-  } catch {
-    cachedMembers = [];
-  }
+  const widget = {
+    showResult(message, ok) {
+      result.textContent = message;
+      result.classList.remove("hidden");
+      result.classList.toggle("rfid-ok", ok);
+      result.classList.toggle("rfid-error", !ok);
+    },
+    setTapText(text) {
+      tapText.textContent = text;
+    },
+    showClear() {
+      clearBtn.classList.remove("hidden");
+    },
+    reset() {
+      scanInput.value = "";
+      result.textContent = "";
+      result.classList.add("hidden");
+      clearBtn.classList.add("hidden");
+      tapText.textContent = idleText;
+      onReset();
+    }
+  };
+
+  tapZone.addEventListener("click", () => scanInput.focus());
+  clearBtn.addEventListener("click", () => widget.reset());
+
+  // RFID readers type the UID quickly and finish with Enter.
+  scanInput.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();                       // do not submit the form
+    const value = scanInput.value.trim();
+    scanInput.value = "";
+    if (value) onScan(value);
+  });
+
+  widget.reset();
+  return widget;
 }
-```
 
-**Line-by-line explanation:**
+// Borrow form: identify the member from the card
+function initRFID() {
+  const memberIdInput = document.getElementById("borrow-memberid");
+  const borrowBtn = document.getElementById("btn-borrow");
 
-```js
-let cachedMembers = [];                                                 // Stores latest members from API
+  const widget = createRfidWidget(
+    "rfid",
+    "Tap Employee RFID Card",
+    value => {
+      const member = findMemberByRFID(value);
 
-async function refreshMemberCache() {                                   // Function updates member cache
-  try {                                                                 // Start error handling block
-    cachedMembers = await apiFetch("/members");                         // Load members from API into cache
-  } catch {                                                             // Run if API call fails
-    cachedMembers = [];                                                 // Use empty array to avoid errors
-  }
+      if (!member) {
+        memberIdInput.value = "";
+        borrowBtn.disabled = true;
+        widget.showResult(`RFID not recognized: ${value}`, false);
+        return;
+      }
+
+      memberIdInput.value = member.id;
+      borrowBtn.disabled = false;
+      widget.setTapText("Card recognized");
+      widget.showResult(`${member.name} (${member.studentId})`, true);
+      widget.showClear();
+    },
+    () => {
+      memberIdInput.value = "";
+      borrowBtn.disabled = true;
+    }
+  );
+
+  return widget;
+}
+
+// Add Member form: capture the card UID into the RFID value field
+function initRegRFID() {
+  const valueInput = document.getElementById("member-rfidvalue");
+
+  const widget = createRfidWidget(
+    "reg-rfid",
+    "Tap RFID Card to Register",
+    value => {
+      const owner = findMemberByRFID(value);
+
+      if (owner) {
+        widget.showResult(`Already registered to ${owner.name}.`, false);
+        return;
+      }
+
+      valueInput.value = value;
+      widget.setTapText("Card captured");
+      widget.showResult(`RFID captured: ${value}`, true);
+      widget.showClear();
+    },
+    () => {
+      valueInput.value = "";
+    }
+  );
+
+  return widget;
+}
+
+// Return form: the card must belong to the original borrower
+function initReturnRFID() {
+  const select = document.getElementById("return-bookselect");
+  const returnBtn = document.getElementById("btn-return");
+
+  const widget = createRfidWidget(
+    "return-rfid",
+    "Tap Borrower's RFID Card",
+    value => {
+      const recordId = select.value;
+
+      if (!recordId) {
+        widget.showResult("Select a book to return first.", false);
+        return;
+      }
+
+      const member = findMemberByRFID(value);
+      const record = cachedUnreturnedBorrows.find(r => String(r.id) === recordId);
+
+      if (!member) {
+        returnBtn.disabled = true;
+        widget.showResult(`RFID not recognized: ${value}`, false);
+        return;
+      }
+
+      if (!record || record.memberId !== member.id) {
+        returnBtn.disabled = true;
+        widget.showResult("This card does not belong to the borrower of this book.", false);
+        return;
+      }
+
+      returnBtn.disabled = false;
+      widget.setTapText("Borrower verified");
+      widget.showResult(`Verified: ${member.name}`, true);
+      widget.showClear();
+    },
+    () => {
+      returnBtn.disabled = true;
+    }
+  );
+
+  // Choosing a different book invalidates the earlier verification
+  select.addEventListener("change", () => widget.reset());
+
+  return widget;
 }
 ```
 
 ## Explanation
 
-The RFID scanner uses `cachedMembers` to find the member with matching `rfidValue`.
+The page has three RFID boxes. They share the same behavior, so `createRfidWidget()` builds one and the three `init...` functions customize it.
+
+| Function | Box | What happens after a scan |
+|---|---|---|
+| `initRFID()` | Borrow tab, **Employee RFID** | Finds the member by `rfidValue`, stores the member id in `borrow-memberid`, enables **Borrow** |
+| `initRegRFID()` | Members tab, **RFID Value** | Puts the scanned value into `member-rfidvalue`; rejects a card already registered to someone |
+| `initReturnRFID()` | Borrow tab, **Borrower RFID** | Enables **Return** only if the card belongs to the original borrower of the selected book |
+
+How scanning works:
+
+- An RFID reader acts like a keyboard. It types the card number quickly and presses **Enter**.
+- Click the tap zone first so the hidden scan field has focus.
+- The Enter key is stopped with `e.preventDefault()` so the form is not submitted by accident.
+- Each widget returns an object with `reset()`. The Borrow, Add Member and Return forms call it after a successful submit.
+
+## Where to paste
+After Part 11.
 
 ---
 
-# Part 9 — Find Member by RFID Value
-
-> **Already provided in the template.** `app.js` already contains this code. Read it, but do **not** paste it again. Declaring it twice causes `Identifier '...' has already been declared` and the whole script stops.
-
-## Code (for reading only)
-
-```js
-function findMemberByRFID(scannedValue) {
-  const trimmed = scannedValue.trim();
-
-  return cachedMembers.find(
-    m => m.rfidValue &&
-         m.rfidValue.toLowerCase() === trimmed.toLowerCase()
-  ) || null;
-}
-```
-
-**Line-by-line explanation:**
-
-```js
-function findMemberByRFID(scannedValue) {                               // Function receives scanned RFID value
-  const trimmed = scannedValue.trim();                                  // Remove extra spaces
-
-  return cachedMembers.find(                                            // Search members array
-    m => m.rfidValue &&                                                 // Make sure member has RFID value
-         m.rfidValue.toLowerCase() === trimmed.toLowerCase()            // Compare RFID values case-insensitively
-  ) || null;                                                            // Return found member or null
-}
-```
-
-## Important Explanation
-
-RFID matching must use:
-
-```js
-m.rfidValue
-```
-
-Do not match against:
-
-```js
-m.studentId
-m.id
-```
-
----
-
-# Part 10 — Refresh Book Cache
-
-> **Already provided in the template.** `app.js` already contains this code. Read it, but do **not** paste it again. Declaring it twice causes `Identifier '...' has already been declared` and the whole script stops.
-
-## Code (for reading only)
-
-```js
-let cachedBooks = [];
-
-async function refreshBookCache() {
-  try {
-    cachedBooks = await apiFetch("/books");
-  } catch {
-    cachedBooks = [];
-  }
-}
-```
-
-**Line-by-line explanation:**
-
-```js
-let cachedBooks = [];                                                   // Stores latest books from API
-
-async function refreshBookCache() {                                     // Function updates book cache
-  try {                                                                 // Start error handling block
-    cachedBooks = await apiFetch("/books");                             // Load books from API into cache
-  } catch {                                                             // Run if API call fails
-    cachedBooks = [];                                                   // Use empty array to avoid errors
-  }
-}
-```
-
-## Explanation
-
-The frontend uses `cachedBooks` to:
-
-- Show book titles in Borrow History
-- Fill the Borrow Book dropdown
-- Fill the Return Book dropdown
-
----
-
-# Part 11 — Populate Borrow Book Dropdown
+# Part 13 — Populate Borrow Book Dropdown
 
 ## Complete Code
 
@@ -999,14 +1218,12 @@ select.value // Example: "1"
 
 That value becomes the `bookId`.
 
-## Student Task
-Replace the TODO inside `populateBorrowBookDropdown()` with the code above.
+## Where to paste
+After Part 12.
 
 ---
 
-# Part 12 — Populate Return Book Dropdown
-
-> `let cachedUnreturnedBorrows` is already declared in the template. Do not declare it again; paste only the function.
+# Part 14 — Populate Return Book Dropdown
 
 ## Complete Code
 
@@ -1102,14 +1319,12 @@ That is needed for:
 PUT /api/borrows/5/return
 ```
 
-## Student Task
-Replace the TODO inside `populateReturnDropdown()` with the code above.
+## Where to paste
+After Part 13.
 
 ---
 
-# Part 13 — Borrow a Book
-
-> **Paste this listener ONCE.** If the `form-borrow` listener appears twice in `app.js`, one click sends two `POST /api/borrows` requests. The first succeeds and the second fails, so you see an error toast even though the book was borrowed.
+# Part 15 — Borrow a Book
 
 ## Endpoint
 
@@ -1194,14 +1409,12 @@ The request body sent to the API is:
 }
 ```
 
-## Student Task
-Replace the TODO inside the Borrow form submit listener with the code above. Then search the file (`Ctrl+F`) for `form-borrow`. It must appear **once** in this listener.
+## Where to paste
+After Part 14. **Paste it once only.** If `form-borrow` appears twice, one click sends two requests and the second shows an error even though the book was borrowed.
 
 ---
 
-# Part 14 — Return a Book
-
-> **Do not skip this part.** Without the `form-return` listener, the Return button does nothing and no error appears.
+# Part 16 — Return a Book
 
 ## Endpoint
 
@@ -1275,12 +1488,12 @@ document.getElementById("form-return").addEventListener("submit", async e => { /
 
 The return RFID widget verifies the borrower first. The Return button is enabled only after RFID matches the original borrower.
 
-## Student Task
-Replace the TODO inside the Return form submit listener with the code above. Then search the file for `form-return`. It must appear **once**.
+## Where to paste
+After Part 15. **Do not skip it.** Without `form-return`, the Return button does nothing and shows no error.
 
 ---
 
-# Part 15 — Load Borrow History Table
+# Part 17 — Load Borrow History Table
 
 ## Endpoint
 
@@ -1376,12 +1589,12 @@ cachedBooks
 cachedMembers
 ```
 
-## Student Task
-Replace the TODO inside `loadBorrows()` with the code above.
+## Where to paste
+After Part 16.
 
 ---
 
-# Part 16 — Initial Page Load
+# Part 18 — Initial Page Load
 
 ## Complete Code
 
@@ -1423,39 +1636,42 @@ loadMembers().then(() => {                                             // Load m
 
 ## Explanation
 
-This runs automatically when the page opens.
+This runs automatically when the page opens. The order matters. `loadBorrows()` must run **after** the book and member caches are filled. If it runs first, the history table shows `Book #1` and `Member #2` instead of real names.
 
-The order matters. `loadBorrows()` must run **after** the book and member caches are filled. If it runs first, the history table shows `Book #1` and `Member #2` instead of real names.
+The three widgets are created here, after the member cache is ready, because scanning needs `cachedMembers`.
 
-This code needs `initRFID()`, `initRegRFID()`, `initReturnRFID()` from the template. If they are missing, the chain stops here.
-
-## Student Task
-Put this at the **bottom** of `app.js`, replacing the TODO there.
+## Where to paste
+At the **very bottom** of `app.js`. Nothing goes after it.
 
 ---
 
 # Full Implementation Checklist
 
-Students must complete these sections in `FrontEnd/app.js`:
+Students must write all of these in `FrontEnd/app.js`, in this order:
 
 ```txt
-[ ] loadBooks()
-[ ] deleteBook(id)
-[ ] Add Book form submit
-[ ] loadMembers()
-[ ] deleteMember(id)
-[ ] Add Member form submit
-[ ] saveRfid()                       (INSIDE openInlineRfidEditor)
-[x] refreshMemberCache()             (already provided)
-[x] findMemberByRFID()               (already provided)
-[x] refreshBookCache()               (already provided)
-[ ] populateBorrowBookDropdown()
-[ ] populateReturnDropdown()
-[ ] Borrow form submit               (once only)
-[ ] Return form submit               (do not skip)
-[ ] loadBorrows()
-[ ] Initial page load calls          (at the bottom)
+[ ] Part 1  API_BASE, shared variables, apiFetch()
+[ ] Part 2  showToast()
+[ ] Part 3  refreshMemberCache(), refreshBookCache(), findMemberByRFID()
+[ ] Part 4  Tab buttons and Refresh buttons
+[ ] Part 5  loadBooks()
+[ ] Part 6  deleteBook(id)
+[ ] Part 7  Add Book form submit        (once only)
+[ ] Part 8  loadMembers()
+[ ] Part 9  deleteMember(id)
+[ ] Part 10 Add Member form submit
+[ ] Part 11 openInlineRfidEditor() with saveRfid() inside
+[ ] Part 12 createRfidWidget(), initRFID(), initRegRFID(), initReturnRFID()
+[ ] Part 13 populateBorrowBookDropdown()
+[ ] Part 14 populateReturnDropdown()
+[ ] Part 15 Borrow form submit          (once only)
+[ ] Part 16 Return form submit          (do not skip)
+[ ] Part 17 loadBorrows()
+[ ] Part 18 Initial page load           (last)
+[ ] Removed the rfid.js script tag from index.html
 ```
+
+Nothing is "already provided". Every item above is written by the student.
 
 ---
 
@@ -1465,15 +1681,20 @@ Press `Ctrl+F` in `app.js` and confirm each count:
 
 | Search for | Expected matches | If different |
 |---|---|---|
-| `"form-borrow"` | 1 | 2 or more: delete the duplicate listener |
-| `"form-return"` | 1 | 0: you skipped Part 14 |
-| `function showToast` | 1 | 0: template code was deleted, restore it |
-| `function initRFID` | 1 | 0: template code was deleted, restore it |
-| `function openInlineRfidEditor` | 1 | 0: template code was deleted, restore it |
-| `async function saveRfid` | 1, and indented inside `openInlineRfidEditor` | At the left margin: move it inside |
+| `PLACE CODE HERE` | 0 | Delete that comment |
+| `const API_BASE` | 1, with the correct port | The port must match `dotnet run` |
 | `let cachedMembers` | 1 | 2 or more: delete the duplicate |
 | `let cachedBooks` | 1 | 2 or more: delete the duplicate |
-| `const API_BASE` | 1, with the correct port | Port must match `dotnet run` |
+| `let rfid, regRfid, returnRfid` | 1 | 0: add it (Part 1) |
+| `function showToast` | 1 | 0: you skipped Part 2 |
+| `".tab-btn"` | 1 | 0: you skipped Part 4 |
+| `"form-add-book"` | 1 | 2 or more: delete the duplicate listener |
+| `"form-borrow"` | 1 | 2 or more: delete the duplicate listener |
+| `"form-return"` | 1 | 0: you skipped Part 16 |
+| `function createRfidWidget` | 1 | 0: you skipped Part 12 |
+| `function openInlineRfidEditor` | 1 | 0: you skipped Part 11 |
+| `async function saveRfid` | 1, indented inside `openInlineRfidEditor` | At the left margin: move it inside |
+| `<script src="rfid.js">` in `index.html` | 0 | Delete the line |
 
 ---
 
@@ -1498,41 +1719,49 @@ FrontEnd/index.html
 
 Press `F12` and watch the **Console** tab. Any red error there tells you what is wrong.
 
-## 3. Test Books
+## 3. Test the Tabs
+
+```txt
+1. Click Members. The Members panel should appear.
+2. Click Borrowing. The Borrowing panel should appear.
+3. Click Books. You should be back on the Books panel.
+```
+
+## 4. Test Books
 
 ```txt
 1. Books should load in the table.
-2. Add Book should create a new book.
+2. Add Book should create ONE new book (not two).
 3. Delete Book should remove a book.
 4. Borrow dropdown should show available book titles.
 ```
 
-## 4. Test Members
+## 5. Test Members
 
 ```txt
 1. Members should load in the table.
-2. Add Member should create a member.
-3. RFID value should save correctly.
-4. Set RFID should update an existing member.
+2. Click the "Tap RFID Card to Register" box, scan or type a value, press Enter.
+3. Add Member should create a member with that RFID value.
+4. Set RFID should open an inline box, then Save should update an existing member.
 5. Delete Member should remove a member.
 ```
 
-## 5. Test Borrowing
+## 6. Test Borrowing
 
 ```txt
 1. Select a book title from the dropdown.
-2. Tap a registered RFID card.
+2. Click the Employee RFID box and tap a registered RFID card.
 3. Borrow button should enable.
 4. Click Borrow.
 5. Borrow History should show the new record, with exactly one success toast.
 ```
 
-## 6. Test Returning
+## 7. Test Returning
 
 ```txt
 1. Select a borrowed book from the Return dropdown.
 2. Tap the RFID card of the original borrower.
-3. Return button should enable.
+3. Return button should enable. (A different member's card must be rejected.)
 4. Click Return.
 5. The book should become available again.
 ```
@@ -1565,19 +1794,35 @@ Fix: see **Prerequisites → CORS**. This is an API setting, not a frontend bug.
 
 ---
 
-## Error: `showToast is not defined` or `initRFID is not defined`
+## The tabs or buttons do nothing
 
-The template code was deleted, usually by replacing the whole `app.js` with the activity snippets.
+Part 4 is missing, or an earlier error stopped the script.
 
-Fix: restore the original template (or your backup copy) and paste only into the TODO sections.
+Fix: add Part 4, then check the Console (`F12`) for the first red error and fix that first.
+
+---
+
+## Error: `showToast is not defined`, `initRFID is not defined` or `refreshBookCache is not defined`
+
+A part was skipped. Nothing is provided by the template in this activity.
+
+Fix: use the Paste Map and add the missing part (Part 2 for `showToast`, Part 3 for the caches, Part 12 for the RFID functions).
+
+---
+
+## Error: `Cannot access '...' before initialization`
+
+A variable such as `cachedBooks` is declared lower in the file than the code that uses it.
+
+Fix: keep the Part 1 `let` lines at the very top, and Part 18 at the very bottom.
 
 ---
 
 ## Error: `Identifier '...' has already been declared`
 
-A provided helper (`cachedMembers`, `cachedBooks`, `cachedUnreturnedBorrows`, `refreshMemberCache`, and so on) was pasted a second time.
+A `let` or `function` was pasted twice (for example `cachedMembers`).
 
-Fix: delete the duplicate. Only fill in the TODO sections.
+Fix: delete the duplicate.
 
 ---
 
@@ -1585,23 +1830,31 @@ Fix: delete the duplicate. Only fill in the TODO sections.
 
 `saveRfid()` was pasted outside `openInlineRfidEditor()`.
 
-Fix: keep it inside that function (see Part 7).
+Fix: keep it inside that function (Part 11).
 
 ---
 
-## Borrowing shows an error toast, but the book was borrowed
+## Adding a book creates it twice, or borrowing shows an error toast even though the book was borrowed
 
-The `form-borrow` listener was pasted twice, so two `POST /api/borrows` requests were sent. The second one fails because the book is no longer available.
+The Add Book or Borrow listener was pasted twice, so two requests were sent.
 
-Fix: search for `"form-borrow"` and delete the duplicate listener.
+Fix: search for `"form-add-book"` and `"form-borrow"` and delete the duplicate listener.
 
 ---
 
 ## The Return button does nothing
 
-The `form-return` listener (Part 14) is missing, or the RFID of the original borrower was not tapped first.
+The `form-return` listener (Part 16) is missing, or the original borrower's RFID was not tapped first.
 
-Fix: add Part 14 once, then tap the borrower's RFID card.
+Fix: add Part 16 once, then tap the borrower's RFID card.
+
+---
+
+## `GET http://localhost:.../rfid.js 404`
+
+`index.html` still loads a file that does not exist.
+
+Fix: delete `<script src="rfid.js"></script>`.
 
 ---
 
@@ -1609,7 +1862,7 @@ Fix: add Part 14 once, then tap the borrower's RFID card.
 
 `loadBorrows()` ran before the caches were filled.
 
-Fix: use the Part 16 order (call `loadBorrows()` last).
+Fix: use the Part 18 order (call `loadBorrows()` last).
 
 ---
 
@@ -1653,8 +1906,9 @@ Check:
 ```txt
 1. The member has an RFID value.
 2. The RFID value is saved in rfidValue.
-3. The page was refreshed after registration.
-4. The API is running.
+3. You clicked the RFID box before scanning, so the scan field has focus.
+4. The page was refreshed after registration.
+5. The API is running.
 ```
 
 ---
@@ -1668,6 +1922,8 @@ Check:
 5. Why do we refresh tables after adding, deleting, borrowing, or returning?
 6. Why does the Return dropdown use borrow record ID instead of book ID?
 7. What happens if the same event listener is added to a form twice?
+8. Why must the page-load code be at the bottom of the file?
+9. Why does an RFID reader need `e.preventDefault()` on the Enter key?
 
 ---
 
