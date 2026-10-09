@@ -41,7 +41,8 @@ Follow these rules.
 3. **Do not skip a part.** Skipping Part 4 leaves the tabs dead. Skipping Part 12 breaks every RFID box. Skipping Part 16 leaves the Return button doing nothing.
 4. **Keep the order.** The `let` variables (Part 1) must come before any code that uses them. The page-load code (Part 18) must be last.
 5. **`saveRfid()` lives inside `openInlineRfidEditor()`** (Part 11). It is not a top-level function.
-6. **Remove the `rfid.js` script tag from `index.html`** if it is there:
+6. **Take screenshots as you go.** Each part ends with a "📸 Screenshot" line. You paste them into **one Word or Google Doc**. Set up your folder and document (see **Screenshot Evidence — Setup**) **before Part 1**.
+7. **Remove the `rfid.js` script tag from `index.html`** if it is there:
 
 ```html
 <script src="rfid.js"></script>   <!-- DELETE this line: the file does not exist -->
@@ -218,6 +219,64 @@ Do not edit the API code during this activity. Your task is to connect the exist
 
 ---
 
+# Screenshot Evidence — Setup (do this before Part 1)
+
+This is an activity, so you prove your work with screenshots. You will paste about 40 of them into **one document** (Microsoft Word or Google Docs), in three groups:
+
+| Group | What it proves | Caption names |
+|---|---|---|
+| **Setup** | The API is running | `setup-01...`, `setup-02...` |
+| **Code** | You wrote each part (one screenshot per part, taken right after you finish it) | `part-01...` to `part-18...` |
+| **Early checks and Tests** | The page works (browser screenshots) | `early-01...`, `test-01...` to `test-14...` |
+
+**You submit that one document only. Never submit `app.js`, `index.html`, the API, or any other project file.**
+
+## A. Create your folder (once)
+
+Inside the project, the `FrontEnd/Screenshots/` folder holds one folder per student. Create **yours** and name it with your student ID and your name, no spaces:
+
+```txt
+FrontEnd/
+  Screenshots/
+    S2013101834_JohnEubertManalo/
+      S2013101834_JohnEubertManalo.docx
+    S2020000000_JohnGilbertSeñido/
+      S2020000000_JohnGilbertSeñido.docx
+```
+
+The document has the **same name as your folder**, with `.docx` at the end. Use only your own folder. Never open or change another student's folder.
+
+## B. Create your document
+
+1. Open **Microsoft Word** or **Google Docs**.
+2. On the first page write your full name, student ID and the date.
+3. Add a heading for each screenshot (the caption name from the sheet, for example `part-05-loadbooks`), and paste the screenshot directly under it.
+4. Save it as `S<ID>_<Name>.docx` inside your folder:
+   - **Word:** `File → Save As` and choose your folder.
+   - **Google Docs:** `File → Download → Microsoft Word (.docx)`, then move the downloaded file into your folder and rename it to match the folder name.
+
+Build the document as you go, not at the end. If you use Google Docs, download the final `.docx` again every time you add more screenshots.
+
+## C. How to take a screenshot
+
+- **Windows:** press `Win + Shift + S`, drag over the area, then press `Ctrl + V` in your document. **Mac:** `Cmd + Shift + 4`.
+- Do not use phone photos of the screen.
+- Make each picture about 16 cm wide so the text is readable.
+
+## D. Rules for every screenshot
+
+| Type | It must show |
+|---|---|
+| **Code** | The `app.js` editor tab name, line numbers, and the **whole** function or block (not half). If it does not fit, take two screenshots and add `a` / `b` to the caption. |
+| **Browser** | The page, the address bar, and the **Console** open (`F12`) with **no red errors**. If there are red errors, fix them first. |
+
+## E. Setup screenshots (take them now)
+
+1. **`setup-01-api-running`**: the terminal showing `Now listening on: http://localhost:XXXX` after `dotnet run`.
+2. **`setup-02-api-books-json`**: the browser at `http://localhost:XXXX/api/books` showing JSON.
+
+---
+
 # Part 1 — Settings, Shared Variables and `apiFetch()`
 
 ## Complete Code
@@ -293,6 +352,9 @@ async function apiFetch(path, options = {}) {                         // Create 
 ## Where to paste
 At the very top of `app.js`, after deleting the `PLACE CODE HERE` comment.
 
+## 📸 Screenshot (code), caption: `part-01-settings-apifetch`
+Take a screenshot of the top of `app.js`: `API_BASE`, the `let` variables and the whole `apiFetch()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 2 — Toast Messages
@@ -322,6 +384,11 @@ Every `catch` block in this activity calls `showToast()`, so it must exist befor
 
 ## Where to paste
 Directly after Part 1.
+
+## 📸 Screenshot (code), caption: `part-02-showtoast`
+Take a screenshot of the whole `showToast()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
+**Quick check (caption `early-01-toast`).** Open `index.html`, press `F12`, and in the **Console** type `showToast("Hello")` and press Enter. Take a screenshot showing the toast message **and** the open Console.
 
 ---
 
@@ -394,6 +461,17 @@ function findMemberByRFID(scannedValue) {                               // Funct
 ## Where to paste
 After Part 2. The `let cachedMembers` and `let cachedBooks` lines are already in Part 1, so do not declare them again.
 
+## 📸 Screenshot (code), caption: `part-03-caches`
+Take a screenshot of `refreshMemberCache()`, `refreshBookCache()` and `findMemberByRFID()`. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
+**Quick check (caption `early-02-cache-console`).** With the API running, open `index.html`, press `F12`, and in the **Console** run:
+
+```js
+await refreshBookCache(); cachedBooks
+```
+
+Take a screenshot showing the list of books printed in the Console.
+
 ---
 
 # Part 4 — Tabs and Refresh Buttons
@@ -438,6 +516,11 @@ document.getElementById("btn-refresh-borrows").addEventListener("click", async (
 
 ## Where to paste
 After Part 3.
+
+## 📸 Screenshot (code), caption: `part-04-tabs-refresh`
+Take a screenshot of the tab-button code and the three Refresh-button listeners. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
+**Quick check (caption `early-03-tabs`).** Open `index.html` and click the **Members** tab. Take a screenshot showing the Members panel visible and the **Members** button highlighted.
 
 ---
 
@@ -518,6 +601,9 @@ async function loadBooks() {                                           // Functi
 ## Where to paste
 After Part 4.
 
+## 📸 Screenshot (code), caption: `part-05-loadbooks`
+Take a screenshot of the whole `loadBooks()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 6 — Delete Book
@@ -570,6 +656,9 @@ async function deleteBook(id) {                                        // Functi
 
 ## Where to paste
 After Part 5.
+
+## 📸 Screenshot (code), caption: `part-06-deletebook`
+Take a screenshot of the whole `deleteBook()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -639,6 +728,9 @@ document.getElementById("form-add-book").addEventListener("submit", async e => {
 
 ## Where to paste
 After Part 6. **Paste it once only.** If `form-add-book` appears twice in `app.js`, every click adds the book twice.
+
+## 📸 Screenshot (code), caption: `part-07-addbook`
+Take a screenshot of the whole Add Book listener. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -741,6 +833,9 @@ async function loadMembers() {                                          // Funct
 ## Where to paste
 After Part 7.
 
+## 📸 Screenshot (code), caption: `part-08-loadmembers`
+Take a screenshot of the whole `loadMembers()` function (scroll if needed; take 2 screenshots, `part-08a` and `part-08b`). Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 9 — Delete Member
@@ -793,6 +888,9 @@ async function deleteMember(id) {                                       // Funct
 
 ## Where to paste
 After Part 8.
+
+## 📸 Screenshot (code), caption: `part-09-deletemember`
+Take a screenshot of the whole `deleteMember()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -866,6 +964,9 @@ document.getElementById("form-add-member").addEventListener("submit", async e =>
 
 ## Where to paste
 After Part 9.
+
+## 📸 Screenshot (code), caption: `part-10-addmember`
+Take a screenshot of the whole Add Member listener. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -957,6 +1058,9 @@ rfidValue  // New value
 
 ## Where to paste
 After Part 10, as one complete function.
+
+## 📸 Screenshot (code), caption: `part-11-inline-rfid-editor`
+Take a screenshot of the whole `openInlineRfidEditor()` function. `saveRfid()` must be visible **indented inside it**. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -1142,6 +1246,9 @@ How scanning works:
 ## Where to paste
 After Part 11.
 
+## 📸 Screenshot (code), caption: `part-12a-rfid-widget-builder`
+Take a screenshot of the whole `createRfidWidget()` function. Then take `part-12b-rfid-init-functions` showing `initRFID()`, `initRegRFID()` and `initReturnRFID()`. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 13 — Populate Borrow Book Dropdown
@@ -1220,6 +1327,9 @@ That value becomes the `bookId`.
 
 ## Where to paste
 After Part 12.
+
+## 📸 Screenshot (code), caption: `part-13-borrow-dropdown`
+Take a screenshot of the whole `populateBorrowBookDropdown()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -1322,6 +1432,9 @@ PUT /api/borrows/5/return
 ## Where to paste
 After Part 13.
 
+## 📸 Screenshot (code), caption: `part-14-return-dropdown`
+Take a screenshot of the whole `populateReturnDropdown()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 15 — Borrow a Book
@@ -1412,6 +1525,9 @@ The request body sent to the API is:
 ## Where to paste
 After Part 14. **Paste it once only.** If `form-borrow` appears twice, one click sends two requests and the second shows an error even though the book was borrowed.
 
+## 📸 Screenshot (code), caption: `part-15-borrow`
+Take a screenshot of the whole Borrow listener. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 16 — Return a Book
@@ -1490,6 +1606,9 @@ The return RFID widget verifies the borrower first. The Return button is enabled
 
 ## Where to paste
 After Part 15. **Do not skip it.** Without `form-return`, the Return button does nothing and shows no error.
+
+## 📸 Screenshot (code), caption: `part-16-return`
+Take a screenshot of the whole Return listener. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -1592,6 +1711,9 @@ cachedMembers
 ## Where to paste
 After Part 16.
 
+## 📸 Screenshot (code), caption: `part-17-loadborrows`
+Take a screenshot of the whole `loadBorrows()` function. Follow the screenshot rules in **Screenshot Evidence — Setup**.
+
 ---
 
 # Part 18 — Initial Page Load
@@ -1642,6 +1764,9 @@ The three widgets are created here, after the member cache is ready, because sca
 
 ## Where to paste
 At the **very bottom** of `app.js`. Nothing goes after it.
+
+## 📸 Screenshot (code), caption: `part-18-page-load`
+Take a screenshot of the page-load code at the very bottom of `app.js`. Follow the screenshot rules in **Screenshot Evidence — Setup**.
 
 ---
 
@@ -1719,6 +1844,8 @@ FrontEnd/index.html
 
 Press `F12` and watch the **Console** tab. Any red error there tells you what is wrong.
 
+📸 **`test-01-page-loaded`**: the Books tab with the table filled with books, and the Console open with no red errors.
+
 ## 3. Test the Tabs
 
 ```txt
@@ -1726,6 +1853,8 @@ Press `F12` and watch the **Console** tab. Any red error there tells you what is
 2. Click Borrowing. The Borrowing panel should appear.
 3. Click Books. You should be back on the Books panel.
 ```
+
+📸 The tabs were already captured in `early-03-tabs`. No new screenshot here.
 
 ## 4. Test Books
 
@@ -1735,6 +1864,9 @@ Press `F12` and watch the **Console** tab. Any red error there tells you what is
 3. Delete Book should remove a book.
 4. Borrow dropdown should show available book titles.
 ```
+
+📸 **`test-02-add-book`**: after adding a book, the new row in the table and the green "Book added!" toast (exactly one row added).
+📸 **`test-03-delete-book`**: after deleting a book, the row gone and the "Book deleted." toast.
 
 ## 5. Test Members
 
@@ -1746,6 +1878,12 @@ Press `F12` and watch the **Console** tab. Any red error there tells you what is
 5. Delete Member should remove a member.
 ```
 
+📸 **`test-04-members-loaded`**: the Members tab with the table filled.
+📸 **`test-05-register-rfid`**: the Add Member form after scanning, showing "RFID captured" and the value in the RFID field.
+📸 **`test-06-add-member`**: the new member's row with its RFID tag and the "Member added!" toast.
+📸 **`test-07-set-rfid-saved`**: a member's row after **Set** then **Save**, showing the new RFID tag and the "RFID set for ..." toast.
+📸 **`test-08-delete-member`**: after deleting a member, the row gone and the "Member deleted." toast.
+
 ## 6. Test Borrowing
 
 ```txt
@@ -1756,6 +1894,9 @@ Press `F12` and watch the **Console** tab. Any red error there tells you what is
 5. Borrow History should show the new record, with exactly one success toast.
 ```
 
+📸 **`test-09-borrow-rfid-recognized`**: the Borrow form with a book selected, the member's name shown under Employee RFID, and the **Borrow** button enabled.
+📸 **`test-10-borrow-success`**: after clicking Borrow, the new record in Borrow History, the "Book borrowed successfully!" toast, and the book gone from the dropdown.
+
 ## 7. Test Returning
 
 ```txt
@@ -1765,6 +1906,158 @@ Press `F12` and watch the **Console** tab. Any red error there tells you what is
 4. Click Return.
 5. The book should become available again.
 ```
+
+📸 **`test-11-return-wrong-card`**: tapping a card of a **different** member, showing the rejection message and the **Return** button still disabled.
+📸 **`test-12-return-verified`**: tapping the **original borrower's** card, showing "Verified" and the **Return** button enabled.
+📸 **`test-13-return-success`**: after Return, the history showing `Yes` under Returned, and the book back in the Borrow dropdown.
+
+## 8. Final Console Check
+
+Go through all three tabs once more with the Console open.
+
+📸 **`test-14-final-console`**: any tab with the Console open and **no red errors**.
+
+---
+
+# Screenshot Checklist
+
+Tick each caption before you submit.
+
+| Caption in your document | Taken when |
+|---|---|
+| `setup-01-api-running`, `setup-02-api-books-json` | Before Part 1 |
+| `part-01-settings-apifetch` | After Part 1 |
+| `early-01-toast`, `part-02-showtoast` | After Part 2 |
+| `early-02-cache-console`, `part-03-caches` | After Part 3 |
+| `early-03-tabs`, `part-04-tabs-refresh` | After Part 4 |
+| `part-05-loadbooks` | After Part 5 |
+| `part-06-deletebook` | After Part 6 |
+| `part-07-addbook` | After Part 7 |
+| `part-08-loadmembers` (or `08a` and `08b`) | After Part 8 |
+| `part-09-deletemember` | After Part 9 |
+| `part-10-addmember` | After Part 10 |
+| `part-11-inline-rfid-editor` | After Part 11 |
+| `part-12a-rfid-widget-builder`, `part-12b-rfid-init-functions` | After Part 12 |
+| `part-13-borrow-dropdown` | After Part 13 |
+| `part-14-return-dropdown` | After Part 14 |
+| `part-15-borrow` | After Part 15 |
+| `part-16-return` | After Part 16 |
+| `part-17-loadborrows` | After Part 17 |
+| `part-18-page-load` | After Part 18 |
+| `test-01-page-loaded` | Testing Step 2 |
+| `test-02-add-book`, `test-03-delete-book` | Testing Step 4 |
+| `test-04-members-loaded` to `test-08-delete-member` (5 captions) | Testing Step 5 |
+| `test-09-borrow-rfid-recognized`, `test-10-borrow-success` | Testing Step 6 |
+| `test-11-return-wrong-card`, `test-12-return-verified`, `test-13-return-success` | Testing Step 7 |
+| `test-14-final-console` | Testing Step 8 |
+
+**Why the early checks?** Parts 1 to 4 do not need the rest of the code. Before Part 18, the **Add** and **Delete** buttons will show an error toast, because they call functions you have not written yet. So take the add, delete, borrow and return screenshots only after Part 18.
+
+---
+
+# Submit Your Document by Pull Request
+
+Goal: your pull request (PR) contains **exactly one new file**, your `.docx`, inside your own folder under `FrontEnd/Screenshots/`. It must **not** contain `app.js`, `index.html`, the `API` folder, or anything else. Your instructor reviews the PR and merges it if it is correct.
+
+Your `app.js` will show as modified (`M`) in VS Code. That is normal. **Do not commit it.**
+
+## Steps
+
+1. **Finish and save your document** inside `FrontEnd/Screenshots/S<ID>_<Name>/` (see **Screenshot Evidence — Setup**).
+
+2. **Open a terminal in the project root** (the folder that contains `FrontEnd` and `API`) and check the status:
+
+```bash
+git status
+```
+
+You will see `app.js` as modified and your folder as untracked. Leave `app.js` alone.
+
+3. **Create your own branch**, named with your student ID. Your unsaved changes stay on your computer.
+
+```bash
+git checkout -b submission/S2020000000
+```
+
+4. **Stage only your folder** (use your own folder name, with quotes):
+
+```bash
+git add "FrontEnd/Screenshots/S2020000000_JohnGilbertSeñido"
+```
+
+5. **Check what is staged.** You must see exactly one line, ending in `.docx`:
+
+```bash
+git diff --cached --name-only
+```
+
+If you see anything else (`app.js`, for example), unstage it:
+
+```bash
+git restore --staged FrontEnd/app.js
+```
+
+6. **Commit:**
+
+```bash
+git commit -m "Add screenshots - S2020000000 John Gilbert Señido"
+```
+
+If Git says it does not know who you are, run this once, then repeat the commit:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+```
+
+7. **Push your branch:**
+
+```bash
+git push -u origin submission/S2020000000
+```
+
+If you get a permission error, you cannot push to the instructor's repository. Fork it on GitHub first, then push to your fork instead:
+
+```bash
+git remote add myfork <YOUR_FORK_URL>
+git push -u myfork submission/S2020000000
+```
+
+8. **Open the Pull Request.** On GitHub, click **Compare & pull request**, then set:
+
+| Field | Value |
+|---|---|
+| Base branch | `main` (the instructor's repository) |
+| Compare branch | `submission/S2020000000` |
+| Title | `Screenshots - S2020000000 John Gilbert Señido` |
+
+Click **Create pull request**.
+
+9. **Check the PR.** Open the **Files changed** tab. It must show **one file**, your `.docx`. If it shows more, fix it with the table below.
+
+10. **Wait for review.** If your instructor asks for changes, update your document, then repeat steps 4 to 7 on the **same branch**. The PR updates automatically. Do **not** merge your own PR.
+
+## Never use these
+
+They stage your whole project, including `app.js`:
+
+```txt
+git add .
+git add -A
+git commit -a
+```
+
+## Common Git Problems
+
+| Problem | Fix |
+|---|---|
+| `git add` staged `app.js` (before commit) | `git restore --staged FrontEnd/app.js`, then check again with `git diff --cached --name-only` |
+| Committed `app.js` but **did not push yet** | `git reset --soft HEAD~1`, then `git restore --staged .`, then stage only your folder again |
+| The PR shows extra files | Close the PR and tell your instructor. Do not delete files yourself. |
+| `fatal: not a git repository` | You are in the wrong folder. `cd` into the project root. |
+| The `.docx` is too big (over 20 MB) | In Word, select a picture, then `Picture Format → Compress Pictures`. Do not paste full-screen 4K images. |
+| Blurry or half-visible code | Zoom the editor with `Ctrl +`, then take the screenshot of the function again |
+| The folder name has a special character (for example `ñ`) and Git shows odd text | Use the plain letter (`n`) in both the folder and file name, and tell your instructor |
 
 ---
 
