@@ -178,6 +178,37 @@ app.UseCors();
 
 ---
 
+# Get the Projects from GitHub (Clone)
+
+The activity uses **two repositories** in the `CCIT102-2A` organization. Clone both into one parent folder (for example `Study`), and give the clones the folder names `API` and `FrontEnd`:
+
+| Repository | Clone into folder |
+|---|---|
+| https://github.com/CCIT102-2A/LibraryBorrowingAPI | `API` |
+| https://github.com/CCIT102-2A/LibraryBorrowingFrontEnd | `FrontEnd` |
+
+```bash
+cd C:\Users\<you>\Documents
+mkdir Study
+cd Study
+git clone https://github.com/CCIT102-2A/LibraryBorrowingAPI.git API
+git clone https://github.com/CCIT102-2A/LibraryBorrowingFrontEnd.git FrontEnd
+```
+
+The last word in each command is the folder name. Do not skip it, or the folders will be named `LibraryBorrowingAPI` and `LibraryBorrowingFrontEnd` and the paths in this sheet will not match.
+
+You now have:
+
+```txt
+Study/
+  API/        <- the .NET Web API (its own git repository)
+  FrontEnd/   <- the HTML page and app.js (its own git repository)
+```
+
+Each folder is a **separate** git repository. Run `dotnet run` inside `API`. Do your editing and git commands inside `FrontEnd`.
+
+---
+
 # Project Files
 
 Students will work inside:
@@ -233,7 +264,7 @@ This is an activity, so you prove your work with screenshots. You will paste abo
 
 ## A. Create your folder (once)
 
-Inside the project, the `FrontEnd/Screenshots/` folder holds one folder per student. Create **yours** and name it with your student ID and your name, no spaces:
+Inside the project, the `FrontEnd/Screenshots/` folder holds one folder per student. If `Screenshots/` does not exist yet, create it. Then create **your** folder inside it and name it with your student ID and your name, no spaces:
 
 ```txt
 FrontEnd/
@@ -1959,19 +1990,22 @@ Tick each caption before you submit.
 
 Goal: your pull request (PR) contains **exactly one new file**, your `.docx`, inside your own folder under `FrontEnd/Screenshots/`. It must **not** contain `app.js`, `index.html`, the `API` folder, or anything else. Your instructor reviews the PR and merges it if it is correct.
 
+`FrontEnd` is its own git repository (you cloned it from `CCIT102-2A/LibraryBorrowingFrontEnd`), so run every git command **inside the `FrontEnd` folder**. In git commands, your folder is written as `Screenshots/S<ID>_<Name>`.
+
 Your `app.js` will show as modified (`M`) in VS Code. That is normal. **Do not commit it.**
 
 ## Steps
 
 1. **Finish and save your document** inside `FrontEnd/Screenshots/S<ID>_<Name>/` (see **Screenshot Evidence — Setup**).
 
-2. **Open a terminal in the project root** (the folder that contains `FrontEnd` and `API`) and check the status:
+2. **Open a terminal in the `FrontEnd` folder** and check the status:
 
 ```bash
+cd C:\Users\<you>\Documents\Study\FrontEnd
 git status
 ```
 
-You will see `app.js` as modified and your folder as untracked. Leave `app.js` alone.
+You will see `app.js` as modified and your `Screenshots` folder as untracked. Leave `app.js` alone.
 
 3. **Create your own branch**, named with your student ID. Your unsaved changes stay on your computer.
 
@@ -1982,7 +2016,7 @@ git checkout -b submission/S2020000000
 4. **Stage only your folder** (use your own folder name, with quotes):
 
 ```bash
-git add "FrontEnd/Screenshots/S2020000000_JohnGilbertSeñido"
+git add "Screenshots/S2020000000_JohnGilbertSeñido"
 ```
 
 5. **Check what is staged.** You must see exactly one line, ending in `.docx`:
@@ -1994,7 +2028,7 @@ git diff --cached --name-only
 If you see anything else (`app.js`, for example), unstage it:
 
 ```bash
-git restore --staged FrontEnd/app.js
+git restore --staged app.js
 ```
 
 6. **Commit:**
@@ -2016,18 +2050,12 @@ git config --global user.email "you@example.com"
 git push -u origin submission/S2020000000
 ```
 
-If you get a permission error, you cannot push to the instructor's repository. Fork it on GitHub first, then push to your fork instead:
-
-```bash
-git remote add myfork <YOUR_FORK_URL>
-git push -u myfork submission/S2020000000
-```
-
 8. **Open the Pull Request.** On GitHub, click **Compare & pull request**, then set:
 
 | Field | Value |
 |---|---|
-| Base branch | `main` (the instructor's repository) |
+| Base repository | `CCIT102-2A/LibraryBorrowingFrontEnd` |
+| Base branch | `main` |
 | Compare branch | `submission/S2020000000` |
 | Title | `Screenshots - S2020000000 John Gilbert Señido` |
 
@@ -2051,10 +2079,10 @@ git commit -a
 
 | Problem | Fix |
 |---|---|
-| `git add` staged `app.js` (before commit) | `git restore --staged FrontEnd/app.js`, then check again with `git diff --cached --name-only` |
+| `git add` staged `app.js` (before commit) | `git restore --staged app.js`, then check again with `git diff --cached --name-only` |
 | Committed `app.js` but **did not push yet** | `git reset --soft HEAD~1`, then `git restore --staged .`, then stage only your folder again |
 | The PR shows extra files | Close the PR and tell your instructor. Do not delete files yourself. |
-| `fatal: not a git repository` | You are in the wrong folder. `cd` into the project root. |
+| `fatal: not a git repository` | You are in the wrong folder. `cd` into your `FrontEnd` folder. |
 | The `.docx` is too big (over 20 MB) | In Word, select a picture, then `Picture Format → Compress Pictures`. Do not paste full-screen 4K images. |
 | Blurry or half-visible code | Zoom the editor with `Ctrl +`, then take the screenshot of the function again |
 | The folder name has a special character (for example `ñ`) and Git shows odd text | Use the plain letter (`n`) in both the folder and file name, and tell your instructor |
